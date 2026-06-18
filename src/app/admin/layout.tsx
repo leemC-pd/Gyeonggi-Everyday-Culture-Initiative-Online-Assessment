@@ -24,6 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin" className="text-gray-600 hover:text-blue-600">대시보드</Link>
             <Link href="/admin/subjects" className="text-gray-600 hover:text-blue-600">평가 대상</Link>
             <Link href="/admin/progress" className="text-gray-600 hover:text-blue-600">진행상황</Link>
+            <Link href="/admin/export" className="text-gray-600 hover:text-blue-600">내보내기</Link>
           </nav>
         </div>
         <span className="text-xs text-gray-500">{profile?.name ?? user.email}</span>
