@@ -1,65 +1,101 @@
-import Image from "next/image";
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import type { InstrumentType, EvaluationStatus } from '@/types'
 
-export default function Home() {
+const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
+  platform_foundation: '플랫폼 — 기초재단',
+  platform_org: '플랫폼 — 유관기관·단체',
+  private_space_foundation: '민간공간 — 기초재단',
+}
+
+const STATUS_BADGE: Record<EvaluationStatus | 'none', { label: string; color: string }> = {
+  none:      { label: '미시작',   color: 'bg-gray-100 text-gray-600' },
+  draft:     { label: '임시저장', color: 'bg-yellow-100 text-yellow-700' },
+  submitted: { label: '제출완료', color: 'bg-green-100 text-green-700' },
+}
+
+interface AssignmentRow {
+  id: string
+  subjects: {
+    name: string
+    instrument: InstrumentType
+    stage: string | null
+    fiscal_year: string | null
+  }
+  evaluations: {
+    status: EvaluationStatus
+    total_score: number | null
+    grade: string | null
+  } | null
+}
+
+export default async function DashboardPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: assignments } = await supabase
+    .from('assignments')
+    .select(`id, subjects(name, instrument, stage, fiscal_year), evaluations(status, total_score, grade)`)
+    .eq('evaluator_id', user.id)
+    .order('created_at')
+
+  const rows = (assignments ?? []) as unknown as AssignmentRow[]
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-gray-800">2026 생활문화 평가시스템</h1>
+          <p className="text-xs text-gray-500 mt-0.5">{user.email}</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </header>
+
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">배정된 평가 대상</h2>
+
+        {rows.length === 0 ? (
+          <p className="text-sm text-gray-500">배정된 평가 대상이 없습니다.</p>
+        ) : (
+          <ul className="space-y-3">
+            {rows.map(row => {
+              const ev = Array.isArray(row.evaluations) ? row.evaluations[0] : row.evaluations
+              const statusKey: EvaluationStatus | 'none' = ev?.status ?? 'none'
+              const badge = STATUS_BADGE[statusKey]
+              const stageLabel = row.subjects.stage ?? row.subjects.fiscal_year ?? ''
+
+              return (
+                <li key={row.id}>
+                  <Link
+                    href={`/evaluate/${row.id}`}
+                    className="block bg-white rounded-xl border border-gray-200 hover:border-blue-400 hover:shadow-sm transition p-4"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-medium text-gray-800">{row.subjects.name}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {INSTRUMENT_LABELS[row.subjects.instrument]}
+                          {stageLabel && <span className="ml-2 text-gray-400">· {stageLabel}</span>}
+                        </p>
+                      </div>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.color}`}>
+                        {badge.label}
+                      </span>
+                    </div>
+                    {ev?.status === 'submitted' && ev.total_score !== null && (
+                      <p className="text-sm text-gray-600 mt-2">
+                        총점 <span className="font-semibold">{Number(ev.total_score).toFixed(1)}</span>점
+                        <span className="ml-2 font-bold text-blue-700">등급 {ev.grade}</span>
+                      </p>
+                    )}
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+    </main>
+  )
 }

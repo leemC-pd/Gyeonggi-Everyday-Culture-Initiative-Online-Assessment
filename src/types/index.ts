@@ -41,6 +41,14 @@ export interface InstrumentConfig {
   }
   areas: Record<string, { name: string; stage: string }>
   instruments: Instrument[]
+  targetModel: {
+    field: string
+    options: string[]
+    guidanceAppliesTo: string[]
+    guidanceItems: string[]
+    guidanceText: string
+    preSurvey: unknown
+  }
 }
 
 // ─── DB 타입 ─────────────────────────────────────────────────
