@@ -26,6 +26,7 @@ export async function middleware(request: NextRequest) {
 
   // 운영자 자가진단 토큰 경로는 인증 불필요
   if (path.startsWith('/operator/')) return supabaseResponse
+  if (path.startsWith('/auth/')) return supabaseResponse
 
   // 미인증 사용자 → 로그인
   if (!user && !path.startsWith('/login')) {
