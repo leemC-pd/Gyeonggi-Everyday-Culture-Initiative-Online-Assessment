@@ -29,6 +29,30 @@ export interface Instrument {
   effectivenessRule?: string
 }
 
+export interface SelfAssessmentItem {
+  q: number
+  text: string
+  type: string
+  options?: string[]
+}
+
+export interface SelfAssessmentForm {
+  id: string
+  name: string
+  filledBy: string
+  access?: string
+  appliesToInstrument: string
+  items: SelfAssessmentItem[]
+}
+
+export interface CrossCheckEntry {
+  fact: string
+  foundation: string[]
+  operator: string[]
+  evaluatorItem: string | string[]
+  rule?: string
+}
+
 export interface InstrumentConfig {
   version: string
   scoring: {
@@ -41,6 +65,11 @@ export interface InstrumentConfig {
   }
   areas: Record<string, { name: string; stage: string }>
   instruments: Instrument[]
+  selfAssessmentForms?: {
+    foundation: SelfAssessmentForm
+    operator: SelfAssessmentForm
+    crossCheckMap: CrossCheckEntry[]
+  }
   targetModel: {
     field: string
     options: string[]
