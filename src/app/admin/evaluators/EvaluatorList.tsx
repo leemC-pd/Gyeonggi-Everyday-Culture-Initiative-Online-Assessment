@@ -49,14 +49,14 @@ export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] 
             placeholder="이름"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="email"
             placeholder="이메일"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleAdd}
