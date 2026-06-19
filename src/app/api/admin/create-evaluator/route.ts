@@ -16,14 +16,17 @@ export async function POST(request: NextRequest) {
 
   if (existing) return NextResponse.json({ error: '이미 등록된 이메일입니다' }, { status: 400 })
 
-  // auth 사용자 생성 (이메일 초대)
+  // auth 사용자 생성
   const { data: authData, error: authError } = await supabase.auth.admin.createUser({
     email,
     email_confirm: true,
     user_metadata: { name },
   })
 
-  if (authError) return NextResponse.json({ error: authError.message }, { status: 500 })
+  if (authError || !authData?.user) {
+    const msg = authError?.message ?? authError?.name ?? JSON.stringify(authError) ?? '사용자 생성 실패'
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 
   // 프로필 생성
   const { error: profileError } = await supabase.from('profiles').insert({
@@ -33,14 +36,9 @@ export async function POST(request: NextRequest) {
     role: 'evaluator',
   })
 
-  if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 })
-
-  // 로그인 링크 발송
-  await supabase.auth.admin.generateLink({
-    type: 'magiclink',
-    email,
-    options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/auth/callback` },
-  })
+  if (profileError) {
+    return NextResponse.json({ error: profileError.message ?? '프로필 생성 실패' }, { status: 500 })
+  }
 
   return NextResponse.json({ ok: true })
 }
