@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 
 export default async function AdminDashboard() {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const [
     { count: subjectCount },

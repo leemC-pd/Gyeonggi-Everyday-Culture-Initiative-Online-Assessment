@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 import { getAreaName, AREA_CODES } from '@/lib/instruments'
 import AssignmentManager from './AssignmentManager'
 import type { InstrumentType } from '@/types'
@@ -17,7 +17,7 @@ interface PageProps {
 
 export default async function SubjectDetailPage({ params }: PageProps) {
   const { subjectId } = await params
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const { data: subject } = await supabase
     .from('subjects')

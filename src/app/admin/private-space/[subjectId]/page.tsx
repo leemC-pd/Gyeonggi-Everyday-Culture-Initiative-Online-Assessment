@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 import { getConfig } from '@/lib/instruments'
 import TokenManager from './TokenManager'
 import FoundationSelfAssessmentForm from './FoundationSelfAssessmentForm'
@@ -12,7 +12,7 @@ interface PageProps {
 
 export default async function PrivateSpaceDetailPage({ params }: PageProps) {
   const { subjectId } = await params
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const { data: subject } = await supabase
     .from('subjects')

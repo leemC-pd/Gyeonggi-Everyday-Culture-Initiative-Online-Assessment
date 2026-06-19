@@ -1,8 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 import ExportButtons from './ExportButtons'
 
 export default async function ExportPage() {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const { count: submittedCount } = await supabase
     .from('evaluations')

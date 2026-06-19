@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 import type { InstrumentType } from '@/types'
 import UploadButton from './UploadButton'
 
@@ -10,7 +10,7 @@ const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
 }
 
 export default async function SubjectsPage() {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const { data: subjects } = await supabase
     .from('subjects')

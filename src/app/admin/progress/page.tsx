@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient as createClient } from '@/lib/supabase/service'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -14,7 +14,7 @@ const STATUS_BADGE = {
 }
 
 export default async function ProgressPage() {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   const { data: subjects } = await supabase
     .from('subjects')
