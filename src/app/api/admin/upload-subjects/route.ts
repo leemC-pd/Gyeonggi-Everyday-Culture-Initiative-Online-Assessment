@@ -16,9 +16,11 @@ function cellText(val: ExcelJS.CellValue): string {
   if (!val) return ''
   if (typeof val === 'string') return val.trim()
   if (typeof val === 'number') return String(val)
-  if (typeof val === 'object' && 'text' in (val as object)) return ((val as { text: string }).text).trim()
   if (typeof val === 'object' && 'richText' in (val as object)) {
     return ((val as { richText: { text: string }[] }).richText).map(r => r.text).join('').trim()
+  }
+  if (typeof val === 'object' && 'text' in (val as object)) {
+    return ((val as { text: string }).text).trim()
   }
   return String(val).trim()
 }
@@ -27,10 +29,6 @@ export async function POST(request: NextRequest) {
   const service = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const { data: { user } } = await service.auth.getUser(
-    request.headers.get('authorization')?.replace('Bearer ', '') ?? ''
   )
 
   const formData = await request.formData()
@@ -44,8 +42,10 @@ export async function POST(request: NextRequest) {
   const sheet = wb.getWorksheet('종합표')
   if (!sheet) return NextResponse.json({ error: '종합표 시트를 찾을 수 없습니다' }, { status: 400 })
 
+  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=평가위원, J=지원금액
   const rows: {
     name: string
+    title: string
     instrument: InstrumentType
     stage: OperationStage | null
     fiscal_year: '신규' | '연속' | null
@@ -53,14 +53,14 @@ export async function POST(request: NextRequest) {
   }[] = []
 
   sheet.eachRow((row, i) => {
-    if (i < 2) return
-    const name = cellText(row.getCell(3).value)
-    const projectName = cellText(row.getCell(4).value)
-    const region = cellText(row.getCell(5).value)
-    const typeStr = cellText(row.getCell(6).value)
-    const subjectStr = cellText(row.getCell(7).value)
-    const stageStr = cellText(row.getCell(9).value)
-    const amount = row.getCell(11).value
+    if (i < 2) return  // 헤더 제외
+    const name = cellText(row.getCell(2).value)   // B: 신청단체
+    const title = cellText(row.getCell(3).value)  // C: 사업명
+    const region = cellText(row.getCell(4).value) // D: 지역
+    const typeStr = cellText(row.getCell(5).value)   // E: 진단유형
+    const subjectStr = cellText(row.getCell(6).value) // F: 주체유형
+    const stageStr = cellText(row.getCell(8).value)   // H: 성장단계
+    const amount = row.getCell(10).value              // J: 지원금액
 
     if (!name || !typeStr) return
 
@@ -73,12 +73,11 @@ export async function POST(request: NextRequest) {
       : null
 
     const notes = [
-      projectName && `사업명: ${projectName}`,
       region && `지역: ${region}`,
       amount && `지원금액: ${Number(amount).toLocaleString()}원`,
     ].filter(Boolean).join(' | ')
 
-    rows.push({ name, instrument, stage, fiscal_year, notes })
+    rows.push({ name, title, instrument, stage, fiscal_year, notes })
   })
 
   if (!rows.length) return NextResponse.json({ error: '유효한 데이터가 없습니다' }, { status: 400 })
@@ -95,6 +94,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       await service.from('subjects').update({
+        title: row.title,
         stage: row.stage,
         fiscal_year: row.fiscal_year,
         notes: row.notes,
