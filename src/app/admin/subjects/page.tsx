@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { InstrumentType } from '@/types'
+import UploadButton from './UploadButton'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
   platform_foundation: '플랫폼 — 기초재단',
@@ -21,10 +22,13 @@ export default async function SubjectsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-800">평가 대상</h1>
-        <Link href="/admin/subjects/new"
-          className="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
-          + 대상 등록
-        </Link>
+        <div className="flex gap-2">
+          <UploadButton />
+          <Link href="/admin/subjects/new"
+            className="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
+            + 대상 등록
+          </Link>
+        </div>
       </div>
 
       {!subjects?.length ? (
