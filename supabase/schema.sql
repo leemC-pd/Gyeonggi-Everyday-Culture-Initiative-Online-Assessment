@@ -284,3 +284,8 @@ create index on evaluations (assignment_id);
 create index on responses (evaluation_id);
 create index on operator_tokens (token);
 create index on operator_tokens (subject_id);
+
+-- 역할별 테이블 권한
+GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon;
