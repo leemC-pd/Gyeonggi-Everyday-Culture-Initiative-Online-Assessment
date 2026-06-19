@@ -18,7 +18,7 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: '평가 대상', value: subjectCount ?? 0, href: '/admin/subjects' },
-    { label: '평가위원', value: evaluatorCount ?? 0, href: '/admin/subjects' },
+    { label: '평가위원', value: evaluatorCount ?? 0, href: '/admin/evaluators' },
     { label: '평가 진행 중', value: (evalCount ?? 0) - (submittedCount ?? 0), href: '/admin/progress' },
     { label: '제출 완료', value: submittedCount ?? 0, href: '/admin/progress' },
   ]
