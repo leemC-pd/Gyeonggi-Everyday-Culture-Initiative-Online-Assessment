@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import LogoutButton from './LogoutButton'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -35,7 +36,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/preview/platform_foundation" className="text-gray-600 hover:text-blue-600">진단지미리보기</Link>
           </nav>
         </div>
-        <span className="text-xs text-gray-500">{profile?.name ?? user.email}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-500">{profile?.name ?? user.email}</span>
+          <LogoutButton />
+        </div>
       </header>
       <div className="max-w-5xl mx-auto px-4 py-8">{children}</div>
     </div>

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import LogoutButton from './LogoutButton'
 import type { InstrumentType, EvaluationStatus } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -50,6 +51,7 @@ export default async function DashboardPage() {
           <h1 className="font-bold text-gray-800">2026 생활문화 평가시스템</h1>
           <p className="text-xs text-gray-500 mt-0.5">{user.email}</p>
         </div>
+        <LogoutButton />
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
