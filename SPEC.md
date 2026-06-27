@@ -29,7 +29,7 @@
 - 지역 (region)
 - 진단유형 instrument: `platform_org` / `platform_foundation` / `private_space_foundation`
 - 주체유형 (target_model): 일반형 / 특정-공동체형 / 혼합형
-- 성장단계 (stage): 도입기 / 성장기 / 안정기
+- 성장단계 (stage): 진입 / 성장
 - 지원금액 (grant_amount)
 
 ### 3-2. 진단유형 매핑 (엑셀 업로드 기준)
