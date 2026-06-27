@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient as createClient } from '@/lib/supabase/service'
-import { getAreaName, AREA_CODES } from '@/lib/instruments'
+import { getAreaName, getInstrument, AREA_CODES } from '@/lib/instruments'
 import AssignmentManager from './AssignmentManager'
+import ReconcileForm from './ReconcileForm'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -45,6 +46,21 @@ export default async function SubjectDetailPage({ params }: PageProps) {
     .order('name')
 
   const stage = subject.stage ?? subject.fiscal_year
+
+  // 합의점수 (최신)
+  const { data: reconciliations } = await supabase
+    .from('reconciliations')
+    .select('area_scores, total_score, grade, reason, created_at')
+    .eq('subject_id', subjectId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+  const latestRecon = reconciliations?.[0] ?? null
+
+  // 이 진단지의 활성 영역 코드
+  const instrument = getInstrument(subject.instrument as InstrumentType)
+  const areaItemCodes = [...new Set(instrument.items.map(i => i.area))]
+  const activeAreaCodes = AREA_CODES.filter(a => areaItemCodes.includes(a))
+
   type AssignmentRow = {
     id: string
     profiles: { id: string; name: string; email: string }
@@ -77,6 +93,30 @@ export default async function SubjectDetailPage({ params }: PageProps) {
           evaluators={(evaluators ?? []).filter(e => !assignedIds.includes(e.id))}
         />
       </section>
+
+      {/* 합의점수 입력 (제출된 위원이 있을 때) */}
+      {rows.some(a => {
+        const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
+        return ev?.status === 'submitted'
+      }) && (
+        <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-gray-700">관리자 합의점수</h2>
+            {latestRecon && (
+              <span className="text-xs text-gray-400">
+                최종 저장: {new Date(latestRecon.created_at).toLocaleDateString('ko-KR')} —
+                총점 {Number(latestRecon.total_score).toFixed(2)}점 / {latestRecon.grade}등급
+              </span>
+            )}
+          </div>
+          <ReconcileForm
+            subjectId={subjectId}
+            areaCodes={activeAreaCodes}
+            existingScores={latestRecon?.area_scores as Record<string, number> | null}
+            existingReason={latestRecon?.reason ?? null}
+          />
+        </section>
+      )}
 
       {/* 위원별 점수 비교 (제출된 경우) */}
       {rows.some(a => {
