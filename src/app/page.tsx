@@ -53,7 +53,16 @@ export default async function DashboardPage() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">배정된 평가 대상</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-700">배정된 평가 대상</h2>
+          <div className="flex gap-2 text-xs">
+            <Link href="/preview/platform_foundation" className="text-blue-600 hover:underline">진단지 미리보기 (재단)</Link>
+            <span className="text-gray-300">|</span>
+            <Link href="/preview/platform_org" className="text-blue-600 hover:underline">진단지 미리보기 (단체)</Link>
+            <span className="text-gray-300">|</span>
+            <Link href="/preview/private_space_foundation" className="text-blue-600 hover:underline">진단지 미리보기 (민간공간)</Link>
+          </div>
+        </div>
 
         {rows.length === 0 ? (
           <p className="text-sm text-gray-500">배정된 평가 대상이 없습니다.</p>
