@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { getInstrument, getAreaName, AREA_CODES } from '@/lib/instruments'
 import { itemApplies } from '@/lib/scoring'
 import type { InstrumentType, Item } from '@/types'
@@ -33,7 +34,8 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const service = createServiceClient()
+  const { data: profile } = await service
     .from('profiles')
     .select('role')
     .eq('id', user.id)
