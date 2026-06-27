@@ -33,6 +33,13 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+  const backHref = profile?.role === 'admin' ? '/admin' : '/'
+
   const instrument = getInstrument(instrumentId as InstrumentType)
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
   const weights = (instrument.weights[weightKey] ?? instrument.weights[Object.keys(instrument.weights)[0]] ?? {}) as Record<string, number>
@@ -50,7 +57,7 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="bg-white border-b px-6 py-4 flex items-center gap-3">
-        <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
+        <Link href={backHref} className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
         <div>
           <h1 className="font-bold text-gray-800">{INSTRUMENT_LABELS[instrumentId]}</h1>
           <p className="text-xs text-gray-500">진단지 미리보기 — 읽기 전용</p>
