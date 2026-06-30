@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { getConfig } from '@/lib/instruments'
 import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { calculate } from '@/lib/scoring'
@@ -19,7 +20,8 @@ export default async function EvaluatePage({ params }: PageProps) {
   if (!user) redirect('/login')
 
   // assignment + subject
-  const { data: assignment } = await supabase
+  const service = createServiceClient()
+  const { data: assignment } = await service
     .from('assignments')
     .select('id, evaluator_id, subjects(id, name, instrument, stage, fiscal_year, target_model)')
     .eq('id', assignmentId)
@@ -42,7 +44,7 @@ export default async function EvaluatePage({ params }: PageProps) {
   const stage = subject.stage ?? subject.fiscal_year
 
   // 기존 평가·응답
-  const { data: evaluation } = await supabase
+  const { data: evaluation } = await service
     .from('evaluations')
     .select('id, status, area_scores, total_score, grade')
     .eq('assignment_id', assignmentId)
@@ -52,7 +54,7 @@ export default async function EvaluatePage({ params }: PageProps) {
   let initialQualitative: Record<string, string> = {}
 
   if (evaluation) {
-    const { data: responses } = await supabase
+    const { data: responses } = await service
       .from('responses')
       .select('item_code, score, qualitative')
       .eq('evaluation_id', evaluation.id)
