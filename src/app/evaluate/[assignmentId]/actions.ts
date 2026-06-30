@@ -1,13 +1,13 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { getInstrument } from '@/lib/instruments'
 import { calculate } from '@/lib/scoring'
 import type { InstrumentType } from '@/types'
 
 // 평가 없으면 생성, 있으면 id 반환
 export async function ensureEvaluation(assignmentId: string): Promise<string> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data: existing } = await supabase
     .from('evaluations')
@@ -34,7 +34,7 @@ export async function saveResponse(
   score: number | null,
   qualitative: string | null
 ) {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
   const { error } = await supabase
     .from('responses')
     .upsert(
@@ -51,7 +51,7 @@ export async function saveQualitative(evaluationId: string, areaCode: string, te
 
 // 최종 제출 — 채점 후 저장
 export async function submitEvaluation(assignmentId: string, evaluationId: string) {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // assignment → subject 조회
   const { data: assignment } = await supabase
@@ -74,7 +74,7 @@ export async function submitEvaluation(assignmentId: string, evaluationId: strin
   const responseMap: Record<string, number | null> = {}
   for (const r of responses ?? []) {
     if (!r.item_code.startsWith('qual_')) {
-      responseMap[r.item_code] = r.score
+      responseMap[r.item_code] = r.score ?? null
     }
   }
 
