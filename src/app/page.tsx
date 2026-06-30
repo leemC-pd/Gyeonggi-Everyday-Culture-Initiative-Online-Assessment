@@ -63,8 +63,6 @@ export default async function DashboardPage() {
             <Link href="/preview/platform_foundation" className="text-blue-600 hover:underline">진단지 미리보기 (재단)</Link>
             <span className="text-gray-300">|</span>
             <Link href="/preview/platform_org" className="text-blue-600 hover:underline">진단지 미리보기 (단체)</Link>
-            <span className="text-gray-300">|</span>
-            <Link href="/preview/private_space_foundation" className="text-blue-600 hover:underline">진단지 미리보기 (민간공간)</Link>
           </div>
         </div>
 
