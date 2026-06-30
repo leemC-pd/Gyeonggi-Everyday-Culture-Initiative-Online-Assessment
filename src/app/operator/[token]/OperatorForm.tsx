@@ -128,7 +128,7 @@ export default function OperatorForm({
                     const yn = (responses[key] ?? '').match(/^있음|^없음/)?.[0] ?? ''
                     set(key, yn + e.target.value)
                   }}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="자세히 적어주세요 (선택)"
                 />
               </div>
@@ -140,7 +140,7 @@ export default function OperatorForm({
                 rows={4}
                 value={responses[key] ?? ''}
                 onChange={e => set(key, e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 placeholder="자유롭게 작성해 주세요"
               />
             )}

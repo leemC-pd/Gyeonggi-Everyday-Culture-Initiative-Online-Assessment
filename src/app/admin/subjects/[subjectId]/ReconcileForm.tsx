@@ -89,7 +89,7 @@ export default function ReconcileForm({ subjectId, areaCodes, existingScores, ex
           value={reason}
           onChange={e => setReason(e.target.value)}
           placeholder="위원 간 합의 내용 등"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
       </div>
 

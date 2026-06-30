@@ -87,14 +87,14 @@ export default function FoundationSelfAssessmentForm({
                 <input type="number" min={0}
                   value={responses[`${key}_n`] ?? ''}
                   onChange={e => set(`${key}_n`, e.target.value)}
-                  className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="참여"
                 />
                 <span className="text-sm text-gray-500">/ 전체</span>
                 <input type="number" min={0}
                   value={responses[`${key}_total`] ?? ''}
                   onChange={e => set(`${key}_total`, e.target.value)}
-                  className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="전체"
                 />
                 <span className="text-sm text-gray-400">개소</span>
@@ -106,7 +106,7 @@ export default function FoundationSelfAssessmentForm({
               <textarea rows={3}
                 value={responses[key] ?? ''}
                 onChange={e => set(key, e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 placeholder="자유롭게 작성해 주세요"
               />
             )}

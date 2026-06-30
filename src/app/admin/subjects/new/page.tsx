@@ -54,14 +54,14 @@ export default function NewSubjectPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">기관·단체·공간명 *</label>
           <input required value={name} onChange={e => setName(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="예: OO문화재단" />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">진단지 종류 *</label>
           <select value={instrument} onChange={e => setInstrument(e.target.value as InstrumentType)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
             {INSTRUMENTS.map(i => <option key={i.value} value={i.value}>{i.label}</option>)}
           </select>
         </div>
@@ -98,7 +98,7 @@ export default function NewSubjectPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">대상모델</label>
           <select value={targetModel} onChange={e => setTargetModel(e.target.value as TargetModel)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
             {(['개방-일반형', '특정-공동체형', '혼합형'] as TargetModel[]).map(v => (
               <option key={v} value={v}>{v}</option>
             ))}
@@ -109,7 +109,7 @@ export default function NewSubjectPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">비고</label>
           <textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="선택 입력" />
         </div>
 

@@ -110,7 +110,7 @@ export default function TokenManager({
           value={spaceName}
           onChange={e => setSpaceName(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleCreate()}
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="공간명 입력 후 발급"
         />
         <button
