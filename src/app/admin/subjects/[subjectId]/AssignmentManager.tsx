@@ -80,8 +80,8 @@ export default function AssignmentManager({
             return (
               <li key={a.id} className="flex items-center justify-between py-2">
                 <div>
-                  <span className="text-sm font-medium text-gray-800">{a.profiles?.name}</span>
-                  <span className="text-xs text-gray-400 ml-2">{a.profiles?.email}</span>
+                  <span className="text-sm font-medium text-gray-900">{a.profiles?.name}</span>
+                  <span className="text-xs text-gray-600 ml-2">{a.profiles?.email}</span>
                   {badge && (
                     <span className={`ml-2 text-xs font-medium ${badge.color}`}>{badge.label}</span>
                   )}
