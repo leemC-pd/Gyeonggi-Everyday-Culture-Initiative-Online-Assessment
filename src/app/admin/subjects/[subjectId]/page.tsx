@@ -4,6 +4,7 @@ import { createServiceClient as createClient } from '@/lib/supabase/service'
 import { getAreaName, getInstrument, AREA_CODES } from '@/lib/instruments'
 import AssignmentManager from './AssignmentManager'
 import ReconcileForm from './ReconcileForm'
+import SubjectStageEditor from './SubjectStageEditor'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -76,9 +77,17 @@ export default async function SubjectDetailPage({ params }: PageProps) {
         <Link href="/admin/subjects" className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
         <div>
           <h1 className="text-xl font-bold text-gray-800">{subject.name}</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 flex items-center flex-wrap gap-1">
             {INSTRUMENT_LABELS[subject.instrument as InstrumentType]}
-            {stage && <span className="ml-2">· {stage}</span>}
+            {subject.instrument !== 'private_space_foundation' && (
+              <span className="ml-1">·
+                <SubjectStageEditor
+                  subjectId={subjectId}
+                  currentStage={subject.stage ?? null}
+                  instrument={subject.instrument}
+                />
+              </span>
+            )}
             {subject.target_model && <span className="ml-2">· {subject.target_model}</span>}
           </p>
         </div>
