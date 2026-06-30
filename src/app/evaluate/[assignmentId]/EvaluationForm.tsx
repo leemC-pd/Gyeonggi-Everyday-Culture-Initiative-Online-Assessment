@@ -51,7 +51,7 @@ export default function EvaluationForm({
 
   const config = getConfig()
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
-  const weights = (instrument.weights[weightKey] ?? instrument.weights['all']) as Record<string, number>
+  const weights = (instrument.weights[weightKey] ?? instrument.weights[Object.keys(instrument.weights)[0]] ?? {}) as Record<string, number>
 
   // 영역별로 문항 그룹핑
   const areaItems: Record<string, Item[]> = {}

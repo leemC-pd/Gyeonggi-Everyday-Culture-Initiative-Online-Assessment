@@ -79,7 +79,7 @@ export default async function EvaluatePage({ params }: PageProps) {
 
   const config = getConfig()
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
-  const weights = (instrument.weights[weightKey] ?? instrument.weights['all']) as Record<string, number>
+  const weights = (instrument.weights[weightKey] ?? instrument.weights[Object.keys(instrument.weights)[0]] ?? {}) as Record<string, number>
 
   return (
     <main className="min-h-screen bg-gray-50">
