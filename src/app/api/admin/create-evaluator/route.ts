@@ -12,8 +12,8 @@ const headers = {
 
 export async function POST(request: NextRequest) {
   console.log('create-evaluator POST called')
-  const { name, email } = await request.json()
-  if (!name || !email) return NextResponse.json({ error: '이름과 이메일을 입력해주세요' }, { status: 400 })
+  const { name, email, password } = await request.json()
+  if (!name || !email || !password) return NextResponse.json({ error: '이름, 이메일, 임시 비밀번호를 입력해주세요' }, { status: 400 })
 
   // 중복 확인
   const checkRes = await fetch(
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const createRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ email, email_confirm: true, user_metadata: { name } }),
+    body: JSON.stringify({ email, password, email_confirm: true, user_metadata: { name } }),
   })
   const createData = await createRes.json()
   console.log('createUser response:', createRes.status, JSON.stringify(createData).slice(0, 200))

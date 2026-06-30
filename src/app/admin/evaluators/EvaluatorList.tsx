@@ -14,23 +14,25 @@ export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] 
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
   async function handleAdd() {
-    if (!name.trim() || !email.trim()) return
+    if (!name.trim() || !email.trim() || !password.trim()) return
     setLoading(true)
     setMessage('')
     const res = await fetch('/api/admin/create-evaluator', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      body: JSON.stringify({ name: name.trim(), email: email.trim(), password: password.trim() }),
     })
     const data = await res.json()
     if (data.ok) {
-      setMessage(`${name} 등록 완료. 로그인 링크가 이메일로 발송됩니다.`)
+      setMessage(`${name} 등록 완료.`)
       setName('')
       setEmail('')
+      setPassword('')
       router.refresh()
     } else {
       setMessage(`오류: ${data.error}`)
@@ -56,11 +58,18 @@ export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] 
             placeholder="이메일"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-56 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="임시 비밀번호"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-36 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleAdd}
-            disabled={loading || !name || !email}
+            disabled={loading || !name || !email || !password}
             className="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
             {loading ? '등록 중...' : '+ 등록'}
