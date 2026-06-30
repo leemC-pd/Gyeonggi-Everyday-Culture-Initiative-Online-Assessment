@@ -33,7 +33,7 @@ export default async function InstrumentEditPage({ params }: PageProps) {
         instrumentId={instrumentId as InstrumentType}
         initialItems={instrument.items}
         areaCodes={AREA_CODES.filter(a => instrument.items.some(i => i.area === a))}
-        getAreaName={getAreaName}
+        areaNames={Object.fromEntries(AREA_CODES.map(a => [a, getAreaName(a)]))}
       />
     </div>
   )

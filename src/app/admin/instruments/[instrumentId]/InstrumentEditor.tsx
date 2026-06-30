@@ -8,10 +8,10 @@ interface Props {
   instrumentId: InstrumentType
   initialItems: Item[]
   areaCodes: readonly string[]
-  getAreaName: (code: string) => string
+  areaNames: Record<string, string>
 }
 
-export default function InstrumentEditor({ instrumentId, initialItems, areaCodes, getAreaName }: Props) {
+export default function InstrumentEditor({ instrumentId, initialItems, areaCodes, areaNames }: Props) {
   const router = useRouter()
   const [items, setItems] = useState<Item[]>(initialItems)
   const [saving, setSaving] = useState(false)
@@ -95,7 +95,7 @@ export default function InstrumentEditor({ instrumentId, initialItems, areaCodes
         return (
           <section key={areaCode} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 border-b px-5 py-3 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">{areaCode}. {getAreaName(areaCode)}</span>
+              <span className="font-semibold text-gray-700">{areaCode}. {areaNames[areaCode] ?? areaCode}</span>
               <button
                 onClick={() => addItem(areaCode)}
                 className="text-xs text-blue-600 hover:text-blue-800 font-medium"
