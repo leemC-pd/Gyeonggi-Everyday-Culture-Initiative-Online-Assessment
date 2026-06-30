@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import LogoutButton from './LogoutButton'
 import type { InstrumentType, EvaluationStatus } from '@/types'
 
@@ -36,7 +37,8 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: assignments } = await supabase
+  const service = createServiceClient()
+  const { data: assignments } = await service
     .from('assignments')
     .select(`id, subjects(name, instrument, stage, fiscal_year), evaluations(status, total_score, grade)`)
     .eq('evaluator_id', user.id)
