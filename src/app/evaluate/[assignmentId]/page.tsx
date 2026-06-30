@@ -1,7 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getInstrument, getConfig } from '@/lib/instruments'
+import { getConfig } from '@/lib/instruments'
+import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { calculate } from '@/lib/scoring'
 import EvaluationForm from './EvaluationForm'
 import type { InstrumentType, TargetModel, ScoringResult } from '@/types'
@@ -37,7 +38,7 @@ export default async function EvaluatePage({ params }: PageProps) {
     }
   }).subjects
 
-  const instrument = getInstrument(subject.instrument)
+  const instrument = await getInstrumentWithOverrides(subject.instrument)
   const stage = subject.stage ?? subject.fiscal_year
 
   // 기존 평가·응답
