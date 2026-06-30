@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 interface Assignment {
   id: string
@@ -39,15 +38,17 @@ export default function AssignmentManager({
     if (!selectedId) return
     setLoading(true)
     setError('')
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('assignments')
-      .insert({ subject_id: subjectId, evaluator_id: selectedId })
-    if (error) {
-      setError(error.message)
-    } else {
+    const res = await fetch('/api/admin/assign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subjectId, evaluatorId: selectedId }),
+    })
+    const data = await res.json()
+    if (data.ok) {
       setSelectedId('')
       router.refresh()
+    } else {
+      setError(data.error)
     }
     setLoading(false)
   }
@@ -58,8 +59,11 @@ export default function AssignmentManager({
       return
     }
     if (!confirm('배정을 취소하시겠습니까?')) return
-    const supabase = createClient()
-    await supabase.from('assignments').delete().eq('id', assignmentId)
+    await fetch('/api/admin/assign', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assignmentId }),
+    })
     router.refresh()
   }
 
@@ -105,7 +109,7 @@ export default function AssignmentManager({
           <select
             value={selectedId}
             onChange={e => setSelectedId(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">위원 선택...</option>
             {evaluators.map(e => (
