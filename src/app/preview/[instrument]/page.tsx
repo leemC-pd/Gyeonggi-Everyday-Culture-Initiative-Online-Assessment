@@ -126,7 +126,7 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
                       {/* 7점 척도 표시 (비활성) */}
                       {applies && (
                         <div className="flex gap-1 flex-wrap">
-                          {[1,2,3,4,5,6,7].map(v => (
+                          {[7,6,5,4,3,2,1].map(v => (
                             <div key={v} className="flex flex-col items-center">
                               <span className="w-9 h-9 flex items-center justify-center rounded-full text-sm font-medium border bg-white text-gray-400 border-gray-200">
                                 {['①','②','③','④','⑤','⑥','⑦'][v-1]}

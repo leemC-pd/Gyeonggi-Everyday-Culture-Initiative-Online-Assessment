@@ -190,7 +190,7 @@ export default function EvaluationForm({
 
                     {applies && !submitDone && (
                       <div className="flex gap-1 flex-wrap">
-                        {[1,2,3,4,5,6,7].map(v => (
+                        {[7,6,5,4,3,2,1].map(v => (
                           <label key={v} className="flex flex-col items-center cursor-pointer group">
                             <input
                               type="radio"
