@@ -24,6 +24,10 @@ export default async function SubjectsPage() {
         <h1 className="text-xl font-bold text-gray-800">평가 대상</h1>
         <div className="flex gap-2">
           <UploadButton />
+          <Link href="/admin/subjects/upload-stage"
+            className="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-50">
+            단계 업로드
+          </Link>
           <Link href="/admin/subjects/new"
             className="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
             + 대상 등록
