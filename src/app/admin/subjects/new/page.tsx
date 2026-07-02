@@ -8,7 +8,7 @@ import type { InstrumentType, OperationStage, TargetModel, FiscalYearType } from
 const INSTRUMENTS: { value: InstrumentType; label: string }[] = [
   { value: 'platform_foundation', label: '플랫폼 — 기초재단' },
   { value: 'platform_org', label: '플랫폼 — 유관기관·단체' },
-  { value: 'private_space_foundation', label: '민간공간 — 기초재단' },
+  { value: 'private_space_foundation', label: '공간활성화 — 기초재단' },
 ]
 
 export default function NewSubjectPage() {

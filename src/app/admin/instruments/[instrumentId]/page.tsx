@@ -6,9 +6,9 @@ import InstrumentEditor from './InstrumentEditor'
 
 const VALID: InstrumentType[] = ['platform_foundation', 'platform_org', 'private_space_foundation']
 const LABELS: Record<InstrumentType, string> = {
-  platform_foundation: '플랫폼 사업 — 기초재단',
-  platform_org: '플랫폼 사업 — 민간단체',
-  private_space_foundation: '민간공간 — 기초재단',
+  platform_foundation: '플랫폼 — 기초재단',
+  platform_org: '플랫폼 — 유관기관·단체',
+  private_space_foundation: '공간활성화 — 기초재단',
 }
 
 interface PageProps {

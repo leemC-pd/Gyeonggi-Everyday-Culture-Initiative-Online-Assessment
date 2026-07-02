@@ -24,7 +24,7 @@ export interface SubjectExportRow {
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
   platform_foundation: '플랫폼 — 기초재단',
   platform_org: '플랫폼 — 유관기관·단체',
-  private_space_foundation: '민간공간 — 기초재단',
+  private_space_foundation: '공간활성화 — 기초재단',
 }
 
 export async function fetchExportData(): Promise<SubjectExportRow[]> {

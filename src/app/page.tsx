@@ -8,7 +8,7 @@ import type { InstrumentType, EvaluationStatus } from '@/types'
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
   platform_foundation: '플랫폼 — 기초재단',
   platform_org: '플랫폼 — 유관기관·단체',
-  private_space_foundation: '민간공간 — 기초재단',
+  private_space_foundation: '공간활성화 — 기초재단',
 }
 
 const STATUS_BADGE: Record<EvaluationStatus | 'none', { label: string; color: string }> = {
@@ -60,9 +60,11 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-700">배정된 평가 대상</h2>
           <div className="flex gap-2 text-xs">
-            <Link href="/preview/platform_foundation" className="text-blue-600 hover:underline">진단지 미리보기 (재단)</Link>
+            <Link href="/preview/platform_foundation" className="text-blue-600 hover:underline">미리보기 (플랫폼·재단)</Link>
             <span className="text-gray-300">|</span>
-            <Link href="/preview/platform_org" className="text-blue-600 hover:underline">진단지 미리보기 (단체)</Link>
+            <Link href="/preview/platform_org" className="text-blue-600 hover:underline">미리보기 (플랫폼·단체)</Link>
+            <span className="text-gray-300">|</span>
+            <Link href="/preview/private_space_foundation" className="text-blue-600 hover:underline">미리보기 (공간활성화)</Link>
           </div>
         </div>
 
