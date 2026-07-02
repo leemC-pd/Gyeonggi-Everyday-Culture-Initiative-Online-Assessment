@@ -645,7 +645,7 @@
     },
     {
       "id": "private_space_foundation",
-      "name": "생활공간 활성화 진단평가지 — 기초재단",
+      "name": "생활문화공간 활성화 진단평가지 — 기초재단",
       "target": "기초재단(중간조직)",
       "stageWeighted": false,
       "stageField": {
