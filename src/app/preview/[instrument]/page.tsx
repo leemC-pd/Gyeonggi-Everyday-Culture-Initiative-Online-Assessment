@@ -111,7 +111,8 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
                 <span className="text-xs text-gray-400">{items.length}문항</span>
               </div>
 
-              {getConfig().areas[areaCode]?.note && (
+              {getConfig().areas[areaCode]?.note
+                && !(instrumentId === 'private_space_foundation' && areaCode === 'C') && (
                 <div className="bg-amber-50 border-b border-amber-100 px-5 py-2 text-xs text-amber-700">
                   {getConfig().areas[areaCode]?.note}
                 </div>

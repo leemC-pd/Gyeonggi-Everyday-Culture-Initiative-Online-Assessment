@@ -192,7 +192,8 @@ export default function EvaluationForm({
               )}
             </div>
 
-            {config.areas[areaCode]?.note && (
+            {config.areas[areaCode]?.note
+              && !(instrument.id === 'private_space_foundation' && areaCode === 'C') && (
               <div className="bg-amber-50 border-b border-amber-100 px-5 py-2 text-xs text-amber-700">
                 {config.areas[areaCode].note}
               </div>
