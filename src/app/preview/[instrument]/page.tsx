@@ -89,7 +89,7 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
         <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-xs text-amber-700">
           채점: (원점수−1)÷6×100 → 영역 평균 × 배점÷100 → 합산 (만점 100) / 등급컷: A ≥85점, B ≥75점, 그 외 C
           {Object.keys(weights).length > 0 && (
-            <span className="ml-2">| 배점: {Object.entries(weights).map(([k, v]) => `${k}:${v}`).join(' ')}</span>
+            <span className="block mt-1">배점: {Object.entries(weights).map(([k, v]) => `${k}:${v}`).join(' ')}</span>
           )}
           {isStageWeighted && !stage && (
             <span className="ml-2 text-amber-500">← 성장단계를 선택하면 배점이 표시됩니다</span>

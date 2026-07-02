@@ -102,8 +102,8 @@ export default async function EvaluatePage({ params }: PageProps) {
         <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-xs text-amber-700">
           채점: (원점수−1)÷6×100 → 영역 평균 × 배점÷100 → 합산 (만점 100) / 등급컷: A ≥85점, B ≥75점, 그 외 C
           {stage && (
-            <span className="ml-2">
-              | 배점: {Object.entries(weights).map(([k,v]) => `${k}:${v}`).join(' ')}
+            <span className="block mt-1">
+              배점: {Object.entries(weights).map(([k,v]) => `${k}:${v}`).join(' ')}
             </span>
           )}
         </div>
