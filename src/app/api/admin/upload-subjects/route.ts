@@ -35,9 +35,8 @@ export async function POST(request: NextRequest) {
   const file = formData.get('file') as File
   if (!file) return NextResponse.json({ error: '파일 없음' }, { status: 400 })
 
-  const buffer = Buffer.from(await file.arrayBuffer())
   const wb = new ExcelJS.Workbook()
-  await wb.xlsx.load(buffer)
+  await wb.xlsx.load(await file.arrayBuffer())
 
   const sheet = wb.getWorksheet('종합표')
   if (!sheet) return NextResponse.json({ error: '종합표 시트를 찾을 수 없습니다' }, { status: 400 })

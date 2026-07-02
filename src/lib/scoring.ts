@@ -20,7 +20,10 @@ export function calculate(
 ): ScoringResult {
   // 배점 결정
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
-  const weights = instrument.weights[weightKey] ?? instrument.weights['all']
+  const weights = instrument.weights[weightKey]
+    ?? instrument.weights['all']
+    ?? instrument.weights[Object.keys(instrument.weights)[0]]
+    ?? {}
 
   const areaAverages: Record<string, number> = {}
   const areaScores: Record<string, number> = {}
@@ -58,7 +61,8 @@ export function calculate(
   }
 
   const totalScore = Object.values(areaScores).reduce((a, b) => a + b, 0)
-  const grade = totalScore > 85 ? 'A' : totalScore > 75 ? 'B' : 'C'
+  // 등급 컷: A ≥ 85, B ≥ 75, 그 외 C (반올림 전 원값 기준)
+  const grade = totalScore >= 85 ? 'A' : totalScore >= 75 ? 'B' : 'C'
 
   return { areaScores, areaAverages, totalScore, grade, itemCount }
 }

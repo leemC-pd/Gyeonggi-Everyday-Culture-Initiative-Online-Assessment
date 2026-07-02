@@ -302,7 +302,7 @@ export default function EvaluationForm({
           <div className="bg-gray-50 border-b px-5 py-3">
             <span className="font-semibold text-gray-700">채점 결과</span>
             <span className="ml-2 text-xs text-gray-500">
-              산식: (원점수−1)÷6×100 → 영역 평균 × 배점÷100 → 합산 / 등급컷: A &gt;85, B &gt;75, 그 외 C
+              산식: (원점수−1)÷6×100 → 영역 평균 × 배점÷100 → 합산 / 등급컷: A ≥85, B ≥75, 그 외 C
             </span>
           </div>
           <div className="p-5">

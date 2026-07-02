@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
   const weights = (instrument.weights[weightKey] ?? instrument.weights[Object.keys(instrument.weights)[0]]) as Record<string, number>
   const totalScore = Object.entries(areaScores as Record<string, number>).reduce((sum, [, v]) => sum + (v ?? 0), 0)
-  const grade = totalScore > 85 ? 'A' : totalScore > 75 ? 'B' : 'C'
+  const grade = totalScore >= 85 ? 'A' : totalScore >= 75 ? 'B' : 'C'
 
   const { error } = await service.from('reconciliations').insert({
     subject_id: subjectId,

@@ -12,7 +12,7 @@ export async function buildScoreXlsx(rows: SubjectExportRow[]): Promise<Buffer> 
 
   // 산식·등급컷 메모 행
   ws.addRow(['[채점 산식] 문항 환산: (원점수−1)÷6×100 → 영역점수: 평균 × 배점÷100 → 총점: 합산(만점 100)'])
-  ws.addRow(['[등급컷] A: 총점 > 85점  /  B: 총점 > 75점  /  그 외 C'])
+  ws.addRow(['[등급컷] A: 총점 ≥ 85점  /  B: 총점 ≥ 75점  /  그 외 C'])
   ws.addRow([])
 
   // 헤더

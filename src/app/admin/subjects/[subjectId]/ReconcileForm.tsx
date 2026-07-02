@@ -21,7 +21,7 @@ export default function ReconcileForm({ subjectId, areaCodes, existingScores, ex
   const [message, setMessage] = useState('')
 
   const total = areaCodes.reduce((sum, a) => sum + (parseFloat(scores[a]) || 0), 0)
-  const grade = total > 85 ? 'A' : total > 75 ? 'B' : 'C'
+  const grade = total >= 85 ? 'A' : total >= 75 ? 'B' : 'C'
 
   async function handleSave() {
     setLoading(true)

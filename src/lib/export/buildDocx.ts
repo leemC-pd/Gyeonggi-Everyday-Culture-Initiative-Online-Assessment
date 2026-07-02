@@ -71,7 +71,7 @@ export async function buildQualDocx(rows: SubjectExportRow[]): Promise<Buffer> {
     }),
     new Paragraph({
       children: [new TextRun({
-        text: `채점 산식: (원점수−1)÷6×100 → 영역 평균×배점÷100 → 합산(만점 100) | 등급컷: A>85, B>75, 그 외 C`,
+        text: `채점 산식: (원점수−1)÷6×100 → 영역 평균×배점÷100 → 합산(만점 100) | 등급컷: A≥85, B≥75, 그 외 C`,
         size: 18, color: '666666', italics: true,
       })],
     }),
