@@ -153,6 +153,27 @@ ALTER TABLE stage_upload_logs DISABLE ROW LEVEL SECURITY;
 
 ---
 
+## 8-1. 테스트 데이터 초기화 (실제 개시 전)
+
+연구원 테스트 후, 실제 평가 시작 전에 Supabase SQL Editor에서 실행.
+
+```sql
+-- (권장) 점수·정성·합의점수만 초기화 (대상·위원·진단지 유지)
+TRUNCATE responses, evaluations, reconciliations RESTART IDENTITY;
+
+-- 위원 배정까지 초기화하려면
+TRUNCATE responses, evaluations, reconciliations, assignments RESTART IDENTITY;
+
+-- 평가대상까지 싹 비우고 새로 업로드하려면
+TRUNCATE responses, evaluations, reconciliations, assignments, stage_upload_logs RESTART IDENTITY;
+DELETE FROM subjects;
+
+-- 테스트 위원 profiles 삭제 (Auth 계정은 대시보드 Authentication→Users에서 별도 삭제)
+DELETE FROM profiles WHERE role = 'evaluator';
+```
+
+---
+
 ## 9. 미구현/추후 (참고)
 
 - [ ] 단계 재업로드 잠금 + 위원 알림 (spec §7-3)
