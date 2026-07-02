@@ -22,6 +22,7 @@ interface Props {
   initialEvaluationId: string | null
   initialResponses: Record<string, number | null>
   initialQualitative: Record<string, string>
+  initialNa: string[]
   isSubmitted: boolean
   submittedResult: ScoringResult | null
   submittedAreaScores: Record<string, number> | null
@@ -35,6 +36,7 @@ export default function EvaluationForm({
   initialEvaluationId,
   initialResponses,
   initialQualitative,
+  initialNa,
   isSubmitted,
   submittedResult,
   submittedAreaScores,
@@ -42,6 +44,7 @@ export default function EvaluationForm({
   const router = useRouter()
   const [evaluationId, setEvaluationId] = useState<string | null>(initialEvaluationId)
   const [scores, setScores] = useState<Record<string, number | null>>(initialResponses)
+  const [naItems, setNaItems] = useState<Set<string>>(new Set(initialNa))
   const [qualitative, setQualitative] = useState<Record<string, string>>(initialQualitative)
   const [saving, setSaving] = useState(false)
   const [submitDone, setSubmitDone] = useState(isSubmitted)
@@ -70,16 +73,36 @@ export default function EvaluationForm({
 
   const handleScoreChange = useCallback((itemCode: string, value: number) => {
     setScores(prev => ({ ...prev, [itemCode]: value }))
+    setNaItems(prev => {
+      if (!prev.has(itemCode)) return prev
+      const next = new Set(prev); next.delete(itemCode); return next
+    })
     // debounced auto-save
     clearTimeout(debounceRef.current[itemCode])
     debounceRef.current[itemCode] = setTimeout(async () => {
       try {
         const id = await getOrCreateEvalId()
-        await saveResponse(id, itemCode, value, null)
+        await saveResponse(id, itemCode, value, null, false)
       } catch (e) {
         console.error(e)
       }
     }, 1000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evaluationId, assignmentId])
+
+  const handleNaToggle = useCallback(async (itemCode: string, checked: boolean) => {
+    setNaItems(prev => {
+      const next = new Set(prev)
+      if (checked) next.add(itemCode); else next.delete(itemCode)
+      return next
+    })
+    if (checked) setScores(prev => ({ ...prev, [itemCode]: null }))
+    try {
+      const id = await getOrCreateEvalId()
+      await saveResponse(id, itemCode, null, null, checked)
+    } catch (e) {
+      console.error(e)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evaluationId, assignmentId])
 
@@ -103,7 +126,7 @@ export default function EvaluationForm({
     try {
       const id = await getOrCreateEvalId()
       await Promise.all([
-        ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null)),
+        ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null, naItems.has(code))),
         ...Object.entries(qualitative).map(([area, text]) => saveQualitative(id, area, text)),
       ])
     } catch (e) {
@@ -120,7 +143,7 @@ export default function EvaluationForm({
       const id = await getOrCreateEvalId()
       // 저장 먼저
       await Promise.all([
-        ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null)),
+        ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null, naItems.has(code))),
         ...Object.entries(qualitative).map(([area, text]) => saveQualitative(id, area, text)),
       ])
       const res = await submitEvaluation(assignmentId, id)
@@ -178,17 +201,29 @@ export default function EvaluationForm({
             <div className="divide-y divide-gray-100">
               {items.map(item => {
                 const applies = itemApplies(item, stage)
+                const isNa = naItems.has(item.code)
                 const currentScore = scores[item.code]
 
                 return (
-                  <div key={item.code} className={`px-5 py-4 ${!applies ? 'opacity-40' : ''}`}>
+                  <div key={item.code} className={`px-5 py-4 ${(!applies || isNa) ? 'opacity-50' : ''}`}>
                     <p className="text-sm text-gray-800 mb-3">
                       <span className="text-xs font-mono text-gray-400 mr-2">{item.code}</span>
                       {item.text}
                       {!applies && <span className="ml-2 text-xs text-gray-400">[해당없음 — 자동 제외]</span>}
                     </p>
 
-                    {applies && !submitDone && (
+                    {applies && item.naAllowed && !submitDone && (
+                      <label className="flex items-center gap-1.5 mb-2 cursor-pointer w-fit">
+                        <input
+                          type="checkbox"
+                          checked={isNa}
+                          onChange={e => handleNaToggle(item.code, e.target.checked)}
+                        />
+                        <span className="text-xs text-gray-600">해당없음 (신규 공간만 지원한 경우 — 채점 제외)</span>
+                      </label>
+                    )}
+
+                    {applies && !isNa && !submitDone && (
                       <div className="flex gap-1 flex-wrap">
                         {[7,6,5,4,3,2,1].map(v => (
                           <label key={v} className="flex flex-col items-center cursor-pointer group">
@@ -217,7 +252,9 @@ export default function EvaluationForm({
                     {applies && submitDone && (
                       <p className="text-sm text-gray-600">
                         선택: <span className="font-medium">
-                          {currentScore ? `${['①','②','③','④','⑤','⑥','⑦'][currentScore-1]} (${LIKERT_LABELS[currentScore]})` : '미입력'}
+                          {isNa
+                            ? '해당없음 (채점 제외)'
+                            : currentScore ? `${['①','②','③','④','⑤','⑥','⑦'][currentScore-1]} (${LIKERT_LABELS[currentScore]})` : '미입력'}
                         </span>
                       </p>
                     )}

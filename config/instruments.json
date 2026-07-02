@@ -846,7 +846,8 @@
           "type": "likert7",
           "appliesTo": "all",
           "text": "[역량·연속성] 연속 지원 공간의 활동 고도화를 위한 지원 노력이 있는가?",
-          "anchor": null
+          "anchor": null,
+          "naAllowed": true
         },
         {
           "code": "G3",

@@ -10,6 +10,7 @@ export interface Item {
   appliesTo: 'all' | '성장' | '진입' | '연속'
   text: string
   anchor: Record<string, string> | null
+  naAllowed?: boolean
 }
 
 export interface AreaWeights {

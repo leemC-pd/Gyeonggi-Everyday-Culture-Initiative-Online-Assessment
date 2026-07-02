@@ -52,11 +52,12 @@ export default async function EvaluatePage({ params }: PageProps) {
 
   let initialResponses: Record<string, number | null> = {}
   let initialQualitative: Record<string, string> = {}
+  const initialNa: string[] = []
 
   if (evaluation) {
     const { data: responses } = await service
       .from('responses')
-      .select('item_code, score, qualitative')
+      .select('item_code, score, qualitative, is_na')
       .eq('evaluation_id', evaluation.id)
 
     for (const r of responses ?? []) {
@@ -65,6 +66,7 @@ export default async function EvaluatePage({ params }: PageProps) {
         initialQualitative[areaCode] = r.qualitative ?? ''
       } else {
         initialResponses[r.item_code] = r.score
+        if (r.is_na) initialNa.push(r.item_code)
       }
     }
   }
@@ -116,6 +118,7 @@ export default async function EvaluatePage({ params }: PageProps) {
           initialEvaluationId={evaluation?.id ?? null}
           initialResponses={initialResponses}
           initialQualitative={initialQualitative}
+          initialNa={initialNa}
           isSubmitted={isSubmitted}
           submittedResult={submittedResult}
           submittedAreaScores={(evaluation?.area_scores as Record<string, number>) ?? null}

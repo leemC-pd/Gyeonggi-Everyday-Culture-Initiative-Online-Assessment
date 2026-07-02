@@ -32,13 +32,14 @@ export async function saveResponse(
   evaluationId: string,
   itemCode: string,
   score: number | null,
-  qualitative: string | null
+  qualitative: string | null,
+  isNa: boolean = false
 ) {
   const supabase = createServiceClient()
   const { error } = await supabase
     .from('responses')
     .upsert(
-      { evaluation_id: evaluationId, item_code: itemCode, score, qualitative, updated_at: new Date().toISOString() },
+      { evaluation_id: evaluationId, item_code: itemCode, score, qualitative, is_na: isNa, updated_at: new Date().toISOString() },
       { onConflict: 'evaluation_id,item_code' }
     )
   if (error) throw new Error(error.message)
