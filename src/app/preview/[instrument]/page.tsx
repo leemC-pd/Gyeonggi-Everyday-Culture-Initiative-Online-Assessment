@@ -130,6 +130,13 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
                         {!applies && <span className="ml-2 text-xs text-gray-400">[해당없음 — 자동 제외]</span>}
                       </p>
 
+                      {item.naAllowed && (
+                        <label className="flex items-center gap-1.5 mb-2 w-fit">
+                          <input type="checkbox" disabled />
+                          <span className="text-xs text-gray-500">해당없음 (신규 공간만 지원한 경우 — 채점 제외)</span>
+                        </label>
+                      )}
+
                       {/* 7점 척도 표시 (비활성) */}
                       {applies && (
                         <div className="flex gap-1 flex-wrap">
