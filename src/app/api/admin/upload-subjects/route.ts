@@ -41,13 +41,15 @@ export async function POST(request: NextRequest) {
   const sheet = wb.getWorksheet('종합표')
   if (!sheet) return NextResponse.json({ error: '종합표 시트를 찾을 수 없습니다' }, { status: 400 })
 
-  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=평가위원, J=지원금액
+  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=평가위원, J=지원금액, K=이력
   const rows: {
     name: string
     title: string
     instrument: InstrumentType
     stage: OperationStage | null
     fiscal_year: '신규' | '연속' | null
+    activity_type: string | null
+    history: string | null
     notes: string
   }[] = []
 
@@ -58,8 +60,10 @@ export async function POST(request: NextRequest) {
     const region = cellText(row.getCell(4).value) // D: 지역
     const typeStr = cellText(row.getCell(5).value)   // E: 진단유형
     const subjectStr = cellText(row.getCell(6).value) // F: 주체유형
+    const activityStr = cellText(row.getCell(7).value) // G: 활동유형
     const stageStr = cellText(row.getCell(8).value)   // H: 성장단계
     const amount = row.getCell(10).value              // J: 지원금액
+    const historyStr = cellText(row.getCell(11).value) // K: 이력
 
     if (!name || !typeStr) return
 
@@ -76,7 +80,7 @@ export async function POST(request: NextRequest) {
       amount && `지원금액: ${Number(amount).toLocaleString()}원`,
     ].filter(Boolean).join(' | ')
 
-    rows.push({ name, title, instrument, stage, fiscal_year, notes })
+    rows.push({ name, title, instrument, stage, fiscal_year, activity_type: activityStr || null, history: historyStr || null, notes })
   })
 
   if (!rows.length) return NextResponse.json({ error: '유효한 데이터가 없습니다' }, { status: 400 })
@@ -96,6 +100,8 @@ export async function POST(request: NextRequest) {
         title: row.title,
         stage: row.stage,
         fiscal_year: row.fiscal_year,
+        activity_type: row.activity_type,
+        history: row.history,
         notes: row.notes,
         updated_at: new Date().toISOString(),
       }).eq('id', existing.id)

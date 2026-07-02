@@ -105,6 +105,8 @@ export interface Subject {
   stage: OperationStage | null
   fiscal_year: FiscalYearType | null
   target_model: TargetModel | null
+  activity_type: string | null
+  history: string | null
   notes: string | null
   created_at: string
   updated_at: string

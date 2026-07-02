@@ -23,7 +23,7 @@ export default async function EvaluatePage({ params }: PageProps) {
   const service = createServiceClient()
   const { data: assignment } = await service
     .from('assignments')
-    .select('id, evaluator_id, subjects(id, name, instrument, stage, fiscal_year, target_model)')
+    .select('id, evaluator_id, subjects(id, name, instrument, stage, fiscal_year, target_model, activity_type, history)')
     .eq('id', assignmentId)
     .single()
 
@@ -37,6 +37,8 @@ export default async function EvaluatePage({ params }: PageProps) {
       stage: string | null
       fiscal_year: string | null
       target_model: TargetModel | null
+      activity_type: string | null
+      history: string | null
     }
   }).subjects
 
@@ -92,6 +94,8 @@ export default async function EvaluatePage({ params }: PageProps) {
           <p className="text-xs text-gray-500">
             {instrument.name}
             {stage && <span className="ml-2">· {stage}</span>}
+            {subject.activity_type && <span className="ml-2">· {subject.activity_type}</span>}
+            {subject.history && <span className="ml-2">· {subject.history}</span>}
             {isSubmitted && <span className="ml-2 text-green-600 font-medium">제출완료</span>}
           </p>
         </div>

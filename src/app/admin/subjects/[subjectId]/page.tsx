@@ -130,6 +130,8 @@ export default async function SubjectDetailPage({ params }: PageProps) {
               </span>
             )}
             {subject.target_model && <span className="ml-2">· {subject.target_model}</span>}
+            {subject.activity_type && <span className="ml-2">· {subject.activity_type}</span>}
+            {subject.history && <span className="ml-2">· {subject.history}</span>}
           </p>
         </div>
       </div>
