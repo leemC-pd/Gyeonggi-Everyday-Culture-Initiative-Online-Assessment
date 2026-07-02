@@ -35,7 +35,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
     .select(`
       id,
       profiles ( id, name, email ),
-      evaluations ( status, total_score, grade, area_scores )
+      evaluations ( id, status, total_score, grade, area_scores )
     `)
     .eq('subject_id', subjectId)
 
@@ -65,10 +65,51 @@ export default async function SubjectDetailPage({ params }: PageProps) {
   type AssignmentRow = {
     id: string
     profiles: { id: string; name: string; email: string }
-    evaluations: { status: string; total_score: number | null; grade: string | null; area_scores: Record<string, number> | null } | null
+    evaluations: { id: string; status: string; total_score: number | null; grade: string | null; area_scores: Record<string, number> | null } | null
   }
   const rows = (assignments ?? []) as unknown as AssignmentRow[]
   const assignedIds = rows.map(a => a.profiles?.id)
+
+  // 제출된 평가의 위원별 원점수 → 문항 편차 플래그
+  const submittedEvals = rows
+    .map(a => {
+      const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
+      return ev?.status === 'submitted' ? { evalId: ev.id, name: a.profiles?.name ?? '?' } : null
+    })
+    .filter((x): x is { evalId: string; name: string } => x !== null)
+
+  const deviationEvaluators = submittedEvals.map(e => e.name)
+  const deviationRows: {
+    code: string; no: number; area: string; text: string
+    scores: (number | null)[]; diff: number | null; flagged: boolean; priority: boolean
+  }[] = []
+
+  if (submittedEvals.length >= 2) {
+    const { data: allResponses } = await supabase
+      .from('responses')
+      .select('evaluation_id, item_code, score')
+      .in('evaluation_id', submittedEvals.map(e => e.evalId))
+
+    // evalId → (item_code → score)
+    const byEval: Record<string, Record<string, number | null>> = {}
+    for (const r of allResponses ?? []) {
+      if (r.item_code.startsWith('qual_')) continue
+      ;(byEval[r.evaluation_id] ??= {})[r.item_code] = r.score
+    }
+
+    for (const item of instrument.items) {
+      const scores = submittedEvals.map(e => byEval[e.evalId]?.[item.code] ?? null)
+      const present = scores.filter((s): s is number => s != null)
+      const diff = present.length >= 2 ? Math.max(...present) - Math.min(...present) : null
+      deviationRows.push({
+        code: item.code, no: item.no, area: item.area, text: item.text,
+        scores,
+        diff,
+        flagged: diff != null && diff >= 2,
+        priority: item.area === 'C' || item.area === 'D',
+      })
+    }
+  }
 
   return (
     <div className="max-w-3xl">
@@ -172,6 +213,56 @@ export default async function SubjectDetailPage({ params }: PageProps) {
                         </>
                       )
                     })()}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* 문항별 위원 간 편차 (원점수 차 ≥2점 자동 표시) */}
+      {deviationRows.length > 0 && (
+        <section className="bg-white rounded-xl border border-gray-200 p-5 mt-6">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="font-semibold text-gray-700">문항별 위원 간 편차</h2>
+            <span className="text-xs text-gray-400">
+              조정대상 {deviationRows.filter(r => r.flagged).length}문항
+            </span>
+          </div>
+          <p className="text-xs text-gray-500 mb-4">
+            동일 문항에서 위원 간 원점수 차이가 <b>2점 이상</b>이면 조정대상으로 표시됩니다.
+            다양성(C)·개방성(D) 문항은 우선 감시 대상입니다.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="text-xs text-gray-500 border-b">
+                <tr>
+                  <th className="text-left pb-2 pr-2">문항</th>
+                  {deviationEvaluators.map((n, i) => (
+                    <th key={i} className="text-center pb-2 px-2 whitespace-nowrap">{n}</th>
+                  ))}
+                  <th className="text-center pb-2 px-2">편차</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {deviationRows.map(r => (
+                  <tr key={r.code} className={r.flagged ? (r.priority ? 'bg-red-50' : 'bg-amber-50') : ''}>
+                    <td className="py-2 pr-2 align-top">
+                      <span className="text-xs font-mono text-gray-400 mr-1">{r.no}.{r.area}</span>
+                      <span className="text-gray-700">{r.text}</span>
+                      {r.flagged && r.priority && (
+                        <span className="ml-1 text-[10px] font-bold text-red-600">우선</span>
+                      )}
+                    </td>
+                    {r.scores.map((s, i) => (
+                      <td key={i} className="text-center py-2 px-2 text-gray-600">
+                        {s != null ? ['①','②','③','④','⑤','⑥','⑦'][s-1] : '—'}
+                      </td>
+                    ))}
+                    <td className={`text-center py-2 px-2 font-semibold ${r.flagged ? (r.priority ? 'text-red-600' : 'text-amber-600') : 'text-gray-400'}`}>
+                      {r.diff != null ? r.diff : '—'}
+                    </td>
                   </tr>
                 ))}
               </tbody>
