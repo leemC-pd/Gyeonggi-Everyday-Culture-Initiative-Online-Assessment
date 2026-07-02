@@ -64,7 +64,7 @@ export interface InstrumentConfig {
     gradeRule: string
     gradeCuts: { grade: string; gt: number | null }[]
   }
-  areas: Record<string, { name: string; stage: string }>
+  areas: Record<string, { name: string; stage: string; note?: string }>
   instruments: Instrument[]
   selfAssessmentForms?: {
     foundation: SelfAssessmentForm

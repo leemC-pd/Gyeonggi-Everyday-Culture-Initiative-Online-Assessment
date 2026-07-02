@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { getInstrument, getAreaName, AREA_CODES } from '@/lib/instruments'
+import { getInstrument, getAreaName, getConfig, AREA_CODES } from '@/lib/instruments'
 import { itemApplies } from '@/lib/scoring'
 import type { InstrumentType, Item } from '@/types'
 
@@ -110,6 +110,12 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
                 </div>
                 <span className="text-xs text-gray-400">{items.length}문항</span>
               </div>
+
+              {getConfig().areas[areaCode]?.note && (
+                <div className="bg-amber-50 border-b border-amber-100 px-5 py-2 text-xs text-amber-700">
+                  {getConfig().areas[areaCode]?.note}
+                </div>
+              )}
 
               <div className="divide-y divide-gray-100">
                 {items.map(item => {
