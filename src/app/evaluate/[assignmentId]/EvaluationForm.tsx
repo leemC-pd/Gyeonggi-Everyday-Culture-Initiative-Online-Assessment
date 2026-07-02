@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ensureEvaluation, saveResponse, saveQualitative, submitEvaluation } from './actions'
+import { ensureEvaluation, saveResponse, saveQualitative, saveInterview, submitEvaluation } from './actions'
 import { calculate, itemApplies } from '@/lib/scoring'
 import { getAreaName, getConfig, AREA_CODES } from '@/lib/instruments'
 import type { Instrument, Item, TargetModel, ScoringResult } from '@/types'
@@ -23,6 +23,7 @@ interface Props {
   initialResponses: Record<string, number | null>
   initialQualitative: Record<string, string>
   initialNa: string[]
+  initialInterview: { interview_target: string; interview_datetime: string; interview_place: string }
   isSubmitted: boolean
   submittedResult: ScoringResult | null
   submittedAreaScores: Record<string, number> | null
@@ -37,6 +38,7 @@ export default function EvaluationForm({
   initialResponses,
   initialQualitative,
   initialNa,
+  initialInterview,
   isSubmitted,
   submittedResult,
   submittedAreaScores,
@@ -46,6 +48,7 @@ export default function EvaluationForm({
   const [scores, setScores] = useState<Record<string, number | null>>(initialResponses)
   const [naItems, setNaItems] = useState<Set<string>>(new Set(initialNa))
   const [qualitative, setQualitative] = useState<Record<string, string>>(initialQualitative)
+  const [interview, setInterview] = useState(initialInterview)
   const [saving, setSaving] = useState(false)
   const [submitDone, setSubmitDone] = useState(isSubmitted)
   const [result, setResult] = useState<ScoringResult | null>(submittedResult)
@@ -120,12 +123,27 @@ export default function EvaluationForm({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evaluationId, assignmentId])
 
+  const handleInterviewChange = useCallback((field: keyof typeof interview, value: string) => {
+    setInterview(prev => ({ ...prev, [field]: value }))
+    clearTimeout(debounceRef.current[`iv_${field}`])
+    debounceRef.current[`iv_${field}`] = setTimeout(async () => {
+      try {
+        const id = await getOrCreateEvalId()
+        await saveInterview(id, { ...interview, [field]: value })
+      } catch (e) {
+        console.error(e)
+      }
+    }, 1000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evaluationId, assignmentId, interview])
+
   async function handleManualSave() {
     setSaving(true)
     setError('')
     try {
       const id = await getOrCreateEvalId()
       await Promise.all([
+        saveInterview(id, interview),
         ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null, naItems.has(code))),
         ...Object.entries(qualitative).map(([area, text]) => saveQualitative(id, area, text)),
       ])
@@ -143,6 +161,7 @@ export default function EvaluationForm({
       const id = await getOrCreateEvalId()
       // 저장 먼저
       await Promise.all([
+        saveInterview(id, interview),
         ...Object.entries(scores).map(([code, val]) => saveResponse(id, code, val, null, naItems.has(code))),
         ...Object.entries(qualitative).map(([area, text]) => saveQualitative(id, area, text)),
       ])
@@ -164,6 +183,50 @@ export default function EvaluationForm({
 
   return (
     <div className="space-y-8">
+      {/* 인터뷰 정보 */}
+      <section className="bg-white rounded-xl border border-gray-200 p-5">
+        <h2 className="font-semibold text-gray-700 mb-3">인터뷰 정보</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">인터뷰 대상 (소속/직위/이름)</label>
+            {submitDone ? (
+              <p className="text-sm text-gray-800">{interview.interview_target || '—'}</p>
+            ) : (
+              <input
+                value={interview.interview_target}
+                onChange={e => handleInterviewChange('interview_target', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">인터뷰 일시</label>
+            {submitDone ? (
+              <p className="text-sm text-gray-800">{interview.interview_datetime || '—'}</p>
+            ) : (
+              <input
+                value={interview.interview_datetime}
+                onChange={e => handleInterviewChange('interview_datetime', e.target.value)}
+                placeholder="예: 2026.09.12.(토) 14:00"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">인터뷰 장소</label>
+            {submitDone ? (
+              <p className="text-sm text-gray-800">{interview.interview_place || '—'}</p>
+            ) : (
+              <input
+                value={interview.interview_place}
+                onChange={e => handleInterviewChange('interview_place', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* 대상모델 지침 배너 */}
       {showGuidance && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">

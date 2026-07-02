@@ -45,6 +45,19 @@ export async function saveResponse(
   if (error) throw new Error(error.message)
 }
 
+// 인터뷰 정보 저장
+export async function saveInterview(
+  evaluationId: string,
+  fields: { interview_target: string; interview_datetime: string; interview_place: string }
+) {
+  const supabase = createServiceClient()
+  const { error } = await supabase
+    .from('evaluations')
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq('id', evaluationId)
+  if (error) throw new Error(error.message)
+}
+
 // 영역 정성 저장 — item_code를 "qual_A" 형태로 저장
 export async function saveQualitative(evaluationId: string, areaCode: string, text: string) {
   await saveResponse(evaluationId, `qual_${areaCode}`, null, text)

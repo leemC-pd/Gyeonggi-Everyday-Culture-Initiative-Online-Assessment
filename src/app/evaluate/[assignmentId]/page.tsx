@@ -46,7 +46,7 @@ export default async function EvaluatePage({ params }: PageProps) {
   // 기존 평가·응답
   const { data: evaluation } = await service
     .from('evaluations')
-    .select('id, status, area_scores, total_score, grade')
+    .select('id, status, area_scores, total_score, grade, interview_target, interview_datetime, interview_place')
     .eq('assignment_id', assignmentId)
     .single()
 
@@ -119,6 +119,11 @@ export default async function EvaluatePage({ params }: PageProps) {
           initialResponses={initialResponses}
           initialQualitative={initialQualitative}
           initialNa={initialNa}
+          initialInterview={{
+            interview_target: (evaluation as { interview_target?: string })?.interview_target ?? '',
+            interview_datetime: (evaluation as { interview_datetime?: string })?.interview_datetime ?? '',
+            interview_place: (evaluation as { interview_place?: string })?.interview_place ?? '',
+          }}
           isSubmitted={isSubmitted}
           submittedResult={submittedResult}
           submittedAreaScores={(evaluation?.area_scores as Record<string, number>) ?? null}
