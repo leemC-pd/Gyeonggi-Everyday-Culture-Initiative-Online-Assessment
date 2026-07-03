@@ -202,7 +202,14 @@ export default async function SubjectDetailPage({ params }: PageProps) {
                   return ev?.status === 'submitted'
                 }).map((a, i) => (
                   <tr key={i}>
-                    <td className="py-2 font-medium text-gray-900">{a.profiles?.name}</td>
+                    <td className="py-2 font-medium text-gray-900">
+                      {(() => {
+                        const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
+                        return ev?.id
+                          ? <Link href={`/admin/evaluations/${ev.id}`} className="text-blue-600 hover:underline">{a.profiles?.name}</Link>
+                          : a.profiles?.name
+                      })()}
+                    </td>
                     {AREA_CODES.map(code => {
                       const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
                       return (
