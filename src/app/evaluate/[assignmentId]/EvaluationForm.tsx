@@ -176,8 +176,7 @@ export default function EvaluationForm({
   async function handleSubmit() {
     const missing = findMissing()
     if (missing.length > 0) {
-      const preview = missing.slice(0, 8).join(', ')
-      setError(`미입력 항목이 있어 제출할 수 없습니다 (${missing.length}건): ${preview}${missing.length > 8 ? ' 등' : ''}`)
+      setError(`미입력 항목이 있어 제출할 수 없습니다 (${missing.length}건).`)
       return
     }
     if (!confirm('최종 제출하면 수정할 수 없습니다. 제출하시겠습니까?')) return
