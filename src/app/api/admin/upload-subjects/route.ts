@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   const sheet = wb.getWorksheet('종합표')
   if (!sheet) return NextResponse.json({ error: '종합표 시트를 찾을 수 없습니다' }, { status: 400 })
 
-  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=평가위원, J=지원금액, K=이력
+  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=참여이력, J=평가위원
   const rows: {
     name: string
     title: string
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
     const subjectStr = cellText(row.getCell(6).value) // F: 주체유형
     const activityStr = cellText(row.getCell(7).value) // G: 활동유형
     const stageStr = cellText(row.getCell(8).value)   // H: 성장단계
-    const amount = row.getCell(10).value              // J: 지원금액
-    const historyStr = cellText(row.getCell(11).value) // K: 이력
+    const historyStr = cellText(row.getCell(9).value) // I: 참여이력
+    const evaluatorStr = cellText(row.getCell(10).value) // J: 평가위원
 
     if (!name || !typeStr) return
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const notes = [
       region && `지역: ${region}`,
-      amount && `지원금액: ${Number(amount).toLocaleString()}원`,
+      evaluatorStr && `평가위원: ${evaluatorStr}`,
     ].filter(Boolean).join(' | ')
 
     rows.push({ name, title, instrument, stage, fiscal_year, activity_type: activityStr || null, history: historyStr || null, notes })
