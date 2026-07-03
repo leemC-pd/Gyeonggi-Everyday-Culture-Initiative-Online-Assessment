@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient as createClient } from '@/lib/supabase/service'
-import { getAreaName, getInstrument, AREA_CODES } from '@/lib/instruments'
-import ReconcileForm from '../../subjects/[subjectId]/ReconcileForm'
+import { getAreaName, AREA_CODES } from '@/lib/instruments'
+import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
+import { itemApplies } from '@/lib/scoring'
+import ReconcileItemsForm from './ReconcileItemsForm'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -39,13 +41,13 @@ export default async function SubjectResultsPage({ params }: PageProps) {
 
   const { data: reconciliations } = await supabase
     .from('reconciliations')
-    .select('area_scores, total_score, grade, reason, created_at')
+    .select('item_scores, area_scores, total_score, grade, reason, created_at')
     .eq('subject_id', subjectId)
     .order('created_at', { ascending: false })
     .limit(1)
   const latestRecon = reconciliations?.[0] ?? null
 
-  const instrument = getInstrument(subject.instrument as InstrumentType)
+  const instrument = await getInstrumentWithOverrides(subject.instrument as InstrumentType)
   const areaItemCodes = [...new Set(instrument.items.map(i => i.area))]
   const activeAreaCodes = AREA_CODES.filter(a => areaItemCodes.includes(a))
 
@@ -70,7 +72,11 @@ export default async function SubjectResultsPage({ params }: PageProps) {
     scores: (number | null)[]; diff: number | null; flagged: boolean; priority: boolean
   }[] = []
 
-  if (submittedEvals.length >= 2) {
+  // 합의점수 문항 초기값 (제출 위원 평균) + 편차
+  const itemAverages: Record<string, number | null> = {}
+  const reconcileItems = instrument.items.filter(it => itemApplies(it, stage))
+
+  if (hasSubmitted) {
     const { data: allResponses } = await supabase
       .from('responses')
       .select('evaluation_id, item_code, score')
@@ -85,15 +91,30 @@ export default async function SubjectResultsPage({ params }: PageProps) {
     for (const item of instrument.items) {
       const scores = submittedEvals.map(e => byEval[e.evalId]?.[item.code] ?? null)
       const present = scores.filter((s): s is number => s != null)
-      const diff = present.length >= 2 ? Math.max(...present) - Math.min(...present) : null
-      deviationRows.push({
-        code: item.code, no: item.no, area: item.area, text: item.text,
-        scores, diff,
-        flagged: diff != null && diff >= 2,
-        priority: item.area === 'C' || item.area === 'D',
-      })
+      // 평균 (소수 첫째 자리)
+      itemAverages[item.code] = present.length
+        ? Math.round((present.reduce((a, b) => a + b, 0) / present.length) * 10) / 10
+        : null
+      if (submittedEvals.length >= 2) {
+        const diff = present.length >= 2 ? Math.max(...present) - Math.min(...present) : null
+        deviationRows.push({
+          code: item.code, no: item.no, area: item.area, text: item.text,
+          scores, diff,
+          flagged: diff != null && diff >= 2,
+          priority: item.area === 'C' || item.area === 'D',
+        })
+      }
     }
   }
+
+  // 이전 합의 문항값이 있으면 그것을, 없으면 위원 평균을 초기값으로
+  const savedItemScores = (latestRecon?.item_scores ?? null) as Record<string, number | null> | null
+  const reconInitial: Record<string, number | null> = {}
+  for (const it of reconcileItems) {
+    reconInitial[it.code] = savedItemScores?.[it.code] ?? itemAverages[it.code] ?? null
+  }
+  const areaNames: Record<string, string> = {}
+  for (const a of activeAreaCodes) areaNames[a] = getAreaName(a)
 
   return (
     <div className="max-w-3xl">
@@ -182,10 +203,13 @@ export default async function SubjectResultsPage({ params }: PageProps) {
               </span>
             )}
           </div>
-          <ReconcileForm
+          <ReconcileItemsForm
             subjectId={subjectId}
-            areaCodes={activeAreaCodes}
-            existingScores={latestRecon?.area_scores as Record<string, number> | null}
+            instrument={instrument}
+            stage={stage}
+            items={reconcileItems}
+            areaNames={areaNames}
+            initialScores={reconInitial}
             existingReason={latestRecon?.reason ?? null}
           />
         </section>
