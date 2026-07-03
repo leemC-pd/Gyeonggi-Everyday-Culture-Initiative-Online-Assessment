@@ -70,10 +70,11 @@ export async function POST(request: NextRequest) {
     const instrument = mapInstrument(typeStr, subjectStr)
     if (!instrument) return
 
-    const stage = (stageStr === '진입' || stageStr === '성장') ? stageStr as OperationStage : null
-    const fiscal_year = instrument === 'private_space_foundation'
-      ? (stageStr === '신규' || stageStr === '연속' ? stageStr as '신규' | '연속' : null)
-      : null
+    // 공간활성화는 단계 구분 없음 → stage 미적용
+    const stage = instrument === 'private_space_foundation'
+      ? null
+      : (stageStr === '진입' || stageStr === '성장' ? stageStr as OperationStage : null)
+    const fiscal_year = null
 
     const notes = [
       region && `지역: ${region}`,
