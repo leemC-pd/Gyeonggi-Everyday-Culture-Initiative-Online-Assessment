@@ -4,9 +4,9 @@ import type { InstrumentType } from '@/types'
 import UploadButton from './UploadButton'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
-  platform_foundation: '플랫폼 — 기초재단',
-  platform_org: '플랫폼 — 유관기관·단체',
-  private_space_foundation: '공간활성화 — 기초재단',
+  platform_foundation: '플랫폼 — 재단',
+  platform_org: '플랫폼 — 단체',
+  private_space_foundation: '공간활성화 — 재단',
 }
 
 export default async function SubjectsPage() {

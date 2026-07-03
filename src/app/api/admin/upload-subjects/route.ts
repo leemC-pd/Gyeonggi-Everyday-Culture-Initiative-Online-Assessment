@@ -10,7 +10,7 @@ function mapInstrument(type: string, subject: string): InstrumentType | null {
   const s = subject.trim()
   // 공간활성화 / 민간공간
   if (t.includes('공간') || t.includes('민간')) return 'private_space_foundation'
-  // 플랫폼: 주체유형에 '재단'이 들어가면 기초재단, 아니면 유관기관·단체
+  // 플랫폼: 주체유형에 '재단'이 들어가면 재단, 아니면 단체
   if (t.includes('플랫폼')) {
     return s.includes('재단') ? 'platform_foundation' : 'platform_org'
   }

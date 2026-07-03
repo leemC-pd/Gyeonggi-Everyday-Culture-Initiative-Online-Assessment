@@ -15,6 +15,7 @@ const INSTRUMENT_ALIASES: Record<string, InstrumentType> = {
   '유관기관·단체': 'platform_org',
   '플랫폼-단체': 'platform_org',
   'platform_org': 'platform_org',
+  '공간활성화': 'private_space_foundation',
   '민간공간': 'private_space_foundation',
   'private_space_foundation': 'private_space_foundation',
 }

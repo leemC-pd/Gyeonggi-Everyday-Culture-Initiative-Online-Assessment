@@ -6,9 +6,9 @@ import LogoutButton from './LogoutButton'
 import type { InstrumentType, EvaluationStatus } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
-  platform_foundation: '플랫폼 — 기초재단',
-  platform_org: '플랫폼 — 유관기관·단체',
-  private_space_foundation: '공간활성화 — 기초재단',
+  platform_foundation: '플랫폼 — 재단',
+  platform_org: '플랫폼 — 단체',
+  private_space_foundation: '공간활성화 — 재단',
 }
 
 const STATUS_BADGE: Record<EvaluationStatus | 'none', { label: string; color: string }> = {

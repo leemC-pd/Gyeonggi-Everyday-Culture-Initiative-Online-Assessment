@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
 const INSTRUMENTS = [
-  { id: 'platform_foundation', label: '플랫폼 — 기초재단' },
-  { id: 'platform_org', label: '플랫폼 — 유관기관·단체' },
-  { id: 'private_space_foundation', label: '공간활성화 — 기초재단' },
+  { id: 'platform_foundation', label: '플랫폼 — 재단' },
+  { id: 'platform_org', label: '플랫폼 — 단체' },
+  { id: 'private_space_foundation', label: '공간활성화 — 재단' },
 ]
 
 export default function InstrumentsPage() {
