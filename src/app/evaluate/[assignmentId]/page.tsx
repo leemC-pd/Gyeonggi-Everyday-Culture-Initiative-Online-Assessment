@@ -88,8 +88,8 @@ export default async function EvaluatePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b px-6 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-sm">
-        <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
+      <header className="bg-white border-b px-6 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-sm print:static print:shadow-none">
+        <Link href="/" className="print:hidden text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
         <div>
           <h1 className="font-bold text-gray-800">{subject.name}</h1>
           <p className="text-xs text-gray-500">
@@ -103,7 +103,7 @@ export default async function EvaluatePage({ params }: PageProps) {
       </header>
 
       {/* 산식·배점 안내 */}
-      <div className="max-w-3xl mx-auto px-4 pt-4">
+      <div className="max-w-3xl mx-auto px-4 pt-4 print:hidden">
         <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-xs text-amber-700">
           채점: (원점수−1)÷6×100 → 영역 평균 × 배점÷100 → 합산 (만점 100) / 등급컷: A ≥85점, B ≥75점, 그 외 C
           {stage && (

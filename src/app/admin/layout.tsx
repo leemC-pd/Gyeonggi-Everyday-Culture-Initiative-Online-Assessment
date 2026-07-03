@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b px-6 py-3 flex items-center justify-between">
+      <header className="bg-white border-b px-6 py-3 flex items-center justify-between print:hidden">
         <div className="flex items-center gap-6">
           <Link href="/admin" className="font-bold text-gray-800 text-sm">관리자</Link>
           <nav className="flex gap-4 text-sm">

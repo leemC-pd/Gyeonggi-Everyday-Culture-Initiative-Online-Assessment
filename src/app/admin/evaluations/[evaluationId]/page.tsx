@@ -4,6 +4,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { getAreaName, AREA_CODES } from '@/lib/instruments'
 import { calculate, itemApplies } from '@/lib/scoring'
+import PrintButton from './PrintButton'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<string, string> = {
@@ -76,8 +77,8 @@ export default async function AdminEvaluationView({ params }: PageProps) {
   return (
     <div className="max-w-3xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/admin/subjects/${subject.id}`} className="text-gray-400 hover:text-gray-600 text-sm">← 대상 상세</Link>
-        <div>
+        <Link href={`/admin/progress/${subject.id}`} className="print:hidden text-gray-400 hover:text-gray-600 text-sm">← 진행상황</Link>
+        <div className="flex-1">
           <h1 className="text-xl font-bold text-gray-800">{subject.name}</h1>
           <p className="text-sm text-gray-500">
             {INSTRUMENT_LABELS[subject.instrument]}
@@ -88,6 +89,7 @@ export default async function AdminEvaluationView({ params }: PageProps) {
               : <span className="ml-2 text-yellow-600 font-medium">임시저장</span>}
           </p>
         </div>
+        <PrintButton />
       </div>
 
       {/* 인터뷰 정보 */}

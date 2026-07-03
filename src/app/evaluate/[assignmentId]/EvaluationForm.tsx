@@ -210,6 +210,17 @@ export default function EvaluationForm({
 
   return (
     <div className="space-y-8">
+      {submitDone && (
+        <div className="print:hidden flex justify-end">
+          <button
+            onClick={() => window.print()}
+            className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 text-gray-700 hover:bg-gray-50"
+          >
+            🖨 인쇄
+          </button>
+        </div>
+      )}
+
       {/* 인터뷰 정보 */}
       <section className="bg-white rounded-xl border border-gray-200 p-5">
         <h2 className="font-semibold text-gray-700 mb-3">인터뷰 정보</h2>
