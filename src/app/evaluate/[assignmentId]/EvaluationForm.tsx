@@ -153,7 +153,33 @@ export default function EvaluationForm({
     setSaving(false)
   }
 
+  function findMissing(): string[] {
+    const missing: string[] = []
+    // 인터뷰 정보
+    if (!interview.interview_target?.trim()) missing.push('인터뷰 대상')
+    if (!interview.interview_datetime?.trim()) missing.push('인터뷰 일시')
+    if (!interview.interview_place?.trim()) missing.push('인터뷰 장소')
+    // 문항 응답 (적용 문항 중 N/A 아닌데 점수 없는 것)
+    for (const item of instrument.items) {
+      if (!itemApplies(item, stage)) continue
+      if (naItems.has(item.code)) continue
+      const v = scores[item.code]
+      if (v === null || v === undefined) missing.push(`${item.no}번 문항`)
+    }
+    // 영역별 정성 평가
+    for (const areaCode of activeAreas) {
+      if (!qualitative[areaCode]?.trim()) missing.push(`${areaCode}영역 정성 평가`)
+    }
+    return missing
+  }
+
   async function handleSubmit() {
+    const missing = findMissing()
+    if (missing.length > 0) {
+      const preview = missing.slice(0, 8).join(', ')
+      setError(`미입력 항목이 있어 제출할 수 없습니다 (${missing.length}건): ${preview}${missing.length > 8 ? ' 등' : ''}`)
+      return
+    }
     if (!confirm('최종 제출하면 수정할 수 없습니다. 제출하시겠습니까?')) return
     setSaving(true)
     setError('')
