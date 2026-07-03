@@ -435,17 +435,17 @@ export default function EvaluationForm({
               <tbody>
                 {activeAreas.map(a => (
                   <tr key={a} className="border-b last:border-0">
-                    <td className="py-2">{a}. {getAreaName(a)}</td>
-                    <td className="text-right text-gray-600">{weights[a]}</td>
-                    <td className="text-right text-gray-600">{result.areaAverages[a]?.toFixed(1) ?? '—'}</td>
-                    <td className="text-right font-medium">{result.areaScores[a]?.toFixed(2) ?? '—'}</td>
+                    <td className="py-2 text-gray-800">{a}. {getAreaName(a)}</td>
+                    <td className="text-right text-gray-700 tabular-nums">{weights[a]}</td>
+                    <td className="text-right text-gray-700 tabular-nums">{result.areaAverages[a]?.toFixed(1) ?? '—'}</td>
+                    <td className="text-right font-medium text-gray-900 tabular-nums">{result.areaScores[a]?.toFixed(2) ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr className="font-bold">
-                  <td colSpan={3} className="pt-3">총점</td>
-                  <td className="text-right pt-3">{result.totalScore.toFixed(2)}</td>
+                  <td colSpan={3} className="pt-3 text-gray-900">총점</td>
+                  <td className="text-right pt-3 text-gray-900 tabular-nums">{result.totalScore.toFixed(2)}</td>
                 </tr>
               </tfoot>
             </table>

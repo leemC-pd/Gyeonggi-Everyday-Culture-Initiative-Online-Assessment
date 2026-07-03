@@ -202,11 +202,11 @@ export default async function SubjectDetailPage({ params }: PageProps) {
                   return ev?.status === 'submitted'
                 }).map((a, i) => (
                   <tr key={i}>
-                    <td className="py-2 font-medium">{a.profiles?.name}</td>
+                    <td className="py-2 font-medium text-gray-900">{a.profiles?.name}</td>
                     {AREA_CODES.map(code => {
                       const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
                       return (
-                        <td key={code} className="text-right py-2 px-2 text-gray-600">
+                        <td key={code} className="text-right py-2 px-2 text-gray-800 tabular-nums">
                           {ev?.area_scores?.[code]?.toFixed(1) ?? '—'}
                         </td>
                       )
@@ -215,7 +215,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
                       const ev = Array.isArray(a.evaluations) ? a.evaluations[0] : a.evaluations
                       return (
                         <>
-                          <td className="text-right py-2 px-2 font-semibold">
+                          <td className="text-right py-2 px-2 font-semibold text-gray-900 tabular-nums">
                             {ev?.total_score != null ? Number(ev.total_score).toFixed(1) : '—'}
                           </td>
                           <td className="text-right py-2 font-bold text-blue-700">{ev?.grade ?? '—'}</td>
@@ -265,7 +265,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
                       )}
                     </td>
                     {r.scores.map((s, i) => (
-                      <td key={i} className="text-center py-2 px-2 text-gray-600">
+                      <td key={i} className="text-center py-2 px-2 text-gray-800">
                         {s != null ? ['①','②','③','④','⑤','⑥','⑦'][s-1] : '—'}
                       </td>
                     ))}

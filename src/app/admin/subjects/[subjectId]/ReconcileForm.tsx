@@ -71,11 +71,11 @@ export default function ReconcileForm({ subjectId, areaCodes, existingScores, ex
                     max="100"
                     value={scores[a]}
                     onChange={e => setScores(prev => ({ ...prev, [a]: e.target.value }))}
-                    className="w-16 border border-gray-300 rounded px-2 py-1 text-right text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-16 border border-gray-300 rounded px-2 py-1 text-right text-sm text-gray-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </td>
               ))}
-              <td className="text-right px-2 font-semibold">{total.toFixed(2)}</td>
+              <td className="text-right px-2 font-semibold text-gray-900 tabular-nums">{total.toFixed(2)}</td>
               <td className="text-right font-bold text-blue-700">{grade}</td>
             </tr>
           </tbody>
