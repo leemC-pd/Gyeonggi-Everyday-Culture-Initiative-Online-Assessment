@@ -5,6 +5,7 @@ import { getAreaName, getInstrument, AREA_CODES } from '@/lib/instruments'
 import AssignmentManager from './AssignmentManager'
 import ReconcileForm from './ReconcileForm'
 import SubjectStageEditor from './SubjectStageEditor'
+import SubjectActivityEditor from './SubjectActivityEditor'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -130,7 +131,13 @@ export default async function SubjectDetailPage({ params }: PageProps) {
               </span>
             )}
             {subject.target_model && <span className="ml-2">· {subject.target_model}</span>}
-            {subject.activity_type && <span className="ml-2">· {subject.activity_type}</span>}
+            <span className="ml-1">·
+              <SubjectActivityEditor
+                subjectId={subjectId}
+                currentActivity={subject.activity_type ?? null}
+                instrument={subject.instrument}
+              />
+            </span>
             {subject.history && <span className="ml-2">· {subject.history}</span>}
           </p>
         </div>
