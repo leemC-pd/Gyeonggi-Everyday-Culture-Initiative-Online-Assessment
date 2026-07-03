@@ -23,7 +23,7 @@ export default async function ProgressPage() {
       assignments (
         id,
         profiles ( name ),
-        evaluations ( status, total_score, grade )
+        evaluations ( id, status, total_score, grade )
       )
     `)
     .order('instrument')
@@ -38,7 +38,7 @@ export default async function ProgressPage() {
     assignments: {
       id: string
       profiles: { name: string }
-      evaluations: { status: string; total_score: number | null; grade: string | null } | null
+      evaluations: { id: string; status: string; total_score: number | null; grade: string | null } | null
     }[]
   }
   const subjectRows = (subjects ?? []) as unknown as SubjectRow[]
@@ -110,7 +110,11 @@ export default async function ProgressPage() {
                         <span className="block text-xs text-gray-400">{s.stage ?? s.fiscal_year}</span>
                       </td>
                     )}
-                    <td className="px-4 py-3 text-gray-800">{a.profiles?.name}</td>
+                    <td className="px-4 py-3 text-gray-800">
+                      {ev?.id
+                        ? <a href={`/admin/evaluations/${ev.id}`} className="text-blue-600 hover:underline">{a.profiles?.name}</a>
+                        : a.profiles?.name}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.color}`}>
                         {badge.label}
