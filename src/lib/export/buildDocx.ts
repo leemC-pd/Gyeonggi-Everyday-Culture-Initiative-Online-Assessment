@@ -134,6 +134,20 @@ export async function buildQualDocx(rows: SubjectExportRow[]): Promise<Buffer> {
       )
     }
 
+    // 총평
+    if (row.qualitative['overall']) {
+      children.push(
+        new Paragraph({
+          children: [new TextRun({ text: '총평', bold: true, size: 22 })],
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 200 },
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: row.qualitative['overall'], size: 20 })],
+        }),
+      )
+    }
+
     children.push(new Paragraph({ text: '', pageBreakBefore: rows.indexOf(row) < rows.length - 1 }))
   }
 
