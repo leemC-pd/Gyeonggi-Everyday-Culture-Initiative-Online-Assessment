@@ -116,7 +116,7 @@ export default async function ProgressPage() {
                         {badge.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right font-medium text-gray-800 tabular-nums">
                       {ev?.total_score != null ? Number(ev.total_score).toFixed(1) : '—'}
                     </td>
                     <td className="px-4 py-3 text-right font-bold text-blue-700">
