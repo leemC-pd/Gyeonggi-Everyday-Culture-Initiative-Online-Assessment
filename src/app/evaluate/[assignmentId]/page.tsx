@@ -88,7 +88,7 @@ export default async function EvaluatePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b px-6 py-4 flex items-center gap-3">
+      <header className="bg-white border-b px-6 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-sm">
         <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
         <div>
           <h1 className="font-bold text-gray-800">{subject.name}</h1>
