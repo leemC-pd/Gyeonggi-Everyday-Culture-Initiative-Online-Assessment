@@ -126,7 +126,7 @@ export default async function ProgressPage() {
                         <span className="block text-xs text-gray-400">{s.stage ?? s.fiscal_year}</span>
                       </td>
                     )}
-                    <td className="px-4 py-3">{a.profiles?.name}</td>
+                    <td className="px-4 py-3 text-gray-800">{a.profiles?.name}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.color}`}>
                         {badge.label}
