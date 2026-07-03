@@ -20,10 +20,11 @@ ALTER TABLE evaluations
   ADD COLUMN IF NOT EXISTS interview_datetime text,
   ADD COLUMN IF NOT EXISTS interview_place text;
 
--- 활동유형·이력 (관리자 업로드)
+-- 활동유형·이력·사전조사 링크 (관리자 업로드)
 ALTER TABLE subjects
   ADD COLUMN IF NOT EXISTS activity_type text,
-  ADD COLUMN IF NOT EXISTS history text;
+  ADD COLUMN IF NOT EXISTS history text,
+  ADD COLUMN IF NOT EXISTS presurvey_url text;
 
 -- 단계 업로드 이력 로그
 CREATE TABLE IF NOT EXISTS stage_upload_logs (
@@ -66,12 +67,13 @@ ALTER TABLE stage_upload_logs DISABLE ROW LEVEL SECURITY;
 | B | 신청단체(기관명) | 고양문화재단 |
 | C | 사업명 | 고양, 생활문화플랫폼 |
 | D | 지역 | 고양 |
-| E | 진단유형 | 플랫폼 / 민간공간 |
-| F | 주체유형 | 기초재단 / (단체) |
+| E | 진단유형 | 플랫폼 / 공간(민간공간) |
+| F | 주체유형 | 재단 / 단체 |
 | G | 활동유형 | 재단: 플랫폼형·사업형·지원형 / 단체: 만남형·제작형·축제형·공간형 |
-| H | 성장단계 | 진입 / 성장 (공간활성화는 신규/연속) |
-| J | 지원금액 | 숫자 |
-| K | 이력 | 신규 / 연속 2년차 / 다회 |
+| H | 성장단계 | 진입 / 성장 (공간활성화는 미적용) |
+| I | 참여이력 | 신규 / 연속 2년차 / 다회 |
+| J | 평가위원 | (참고 메모, 자동 배정 아님) |
+| L | 사전조사 링크 | 대상별 구글폼 응답/PDF URL (선택) |
 
 - [ ] 업로드 후 "N건 신규 등록, N건 업데이트" 메시지 확인
 - [ ] 평가대상 목록에 기관·사업명·진단지·단계 정상 표시
