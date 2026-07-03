@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getInstrument, getAreaName, AREA_CODES } from '@/lib/instruments'
-import { calculate } from '@/lib/scoring'
+import { calculate, itemApplies } from '@/lib/scoring'
 import type { InstrumentType } from '@/types'
 
 export interface SubjectExportRow {
@@ -13,6 +13,7 @@ export interface SubjectExportRow {
   status: string
   areaScores: Record<string, number>       // 기여점수
   areaAverages: Record<string, number>     // 영역 평균(0~100)
+  areaRaw7: Record<string, number>         // 영역 평균(7점 척도, 방사표용)
   areaWeights: Record<string, number>      // 배점
   totalScore: number | null
   grade: string | null
@@ -43,10 +44,10 @@ export async function fetchExportData(): Promise<SubjectExportRow[]> {
   // 최신 reconciliation (대상별)
   const { data: reconciliations } = await supabase
     .from('reconciliations')
-    .select('subject_id, area_scores, total_score, grade, reason')
+    .select('subject_id, item_scores, area_scores, total_score, grade, reason')
     .order('created_at', { ascending: false })
 
-  const reconBySubject: Record<string, { area_scores: Record<string, number>; total_score: number; grade: string; reason: string | null }> = {}
+  const reconBySubject: Record<string, { item_scores: Record<string, number | null> | null; area_scores: Record<string, number>; total_score: number; grade: string; reason: string | null }> = {}
   for (const r of reconciliations ?? []) {
     if (!reconBySubject[r.subject_id]) reconBySubject[r.subject_id] = r
   }
@@ -85,6 +86,22 @@ export async function fetchExportData(): Promise<SubjectExportRow[]> {
     const result = calculate(instrument, stage, scoreMap)
     const recon = reconBySubject[subject.id]
 
+    // 영역별 7점 척도 평균 (합의 있으면 합의 문항점수 기준)
+    const rawSource = (recon?.item_scores && Object.keys(recon.item_scores).length)
+      ? recon.item_scores
+      : scoreMap
+    const areaRaw7: Record<string, number> = {}
+    for (const areaCode of AREA_CODES) {
+      const vals: number[] = []
+      for (const item of instrument.items) {
+        if (item.area !== areaCode) continue
+        if (!itemApplies(item, stage)) continue
+        const v = rawSource[item.code]
+        if (v !== null && v !== undefined && !Number.isNaN(Number(v))) vals.push(Number(v))
+      }
+      if (vals.length) areaRaw7[areaCode] = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100
+    }
+
     rows.push({
       subjectName: subject.name,
       instrument: subject.instrument,
@@ -95,6 +112,7 @@ export async function fetchExportData(): Promise<SubjectExportRow[]> {
       status: evaluation.status,
       areaScores: recon ? recon.area_scores : result.areaScores,
       areaAverages: result.areaAverages,
+      areaRaw7,
       areaWeights: weights,
       totalScore: recon ? recon.total_score : result.totalScore,
       grade: recon ? recon.grade : result.grade,

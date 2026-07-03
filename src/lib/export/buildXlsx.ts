@@ -103,6 +103,33 @@ export async function buildScoreXlsx(rows: SubjectExportRow[]): Promise<Buffer> 
   ws2.getColumn(2).width = 20
   for (let i = 3; i <= 2 + AREA_CODES.length; i++) ws2.getColumn(i).width = 11
 
+  // ── 시트3: 영역별 7점 척도 평균 (방사표용) ─────────────────
+  const ws3 = wb.addWorksheet('영역평균(7점)')
+  ws3.addRow(['※ 영역별 7점 척도 평균 (합의점수가 있으면 합의값 기준). 방사형 그래프 작성용.'])
+  ws3.getRow(1).font = { color: { argb: 'FF2563EB' }, italic: true, size: 9 }
+  ws3.addRow([])
+
+  const h3 = ws3.addRow([
+    '기관명', '진단지', '평가위원',
+    ...AREA_CODES.map(a => `${a}.${getAreaName(a)}`),
+  ])
+  h3.font = { bold: true }
+  h3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F0FE' } }
+
+  for (const row of rows) {
+    ws3.addRow([
+      row.subjectName,
+      row.instrumentName,
+      row.evaluatorName,
+      ...AREA_CODES.map(a => row.areaRaw7[a] != null ? +row.areaRaw7[a].toFixed(2) : '—'),
+    ])
+  }
+
+  ws3.getColumn(1).width = 22
+  ws3.getColumn(2).width = 20
+  ws3.getColumn(3).width = 10
+  for (let i = 4; i <= 3 + AREA_CODES.length; i++) ws3.getColumn(i).width = 10
+
   const buf = await wb.xlsx.writeBuffer()
   return Buffer.from(buf)
 }
