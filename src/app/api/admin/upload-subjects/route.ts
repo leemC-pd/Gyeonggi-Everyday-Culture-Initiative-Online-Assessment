@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   const sheet = wb.getWorksheet('종합표')
   if (!sheet) return NextResponse.json({ error: '종합표 시트를 찾을 수 없습니다' }, { status: 400 })
 
-  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=참여이력, J=평가위원
+  // 종합표 컬럼: A=ID, B=신청단체, C=사업명, D=지역, E=진단유형, F=주체유형, G=활동유형, H=성장단계, I=참여이력, J=평가위원, L=사전조사 링크
   const rows: {
     name: string
     title: string
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     fiscal_year: '신규' | '연속' | null
     activity_type: string | null
     history: string | null
+    presurvey_url: string | null
     notes: string
   }[] = []
 
@@ -69,6 +70,7 @@ export async function POST(request: NextRequest) {
     const stageStr = cellText(row.getCell(8).value)   // H: 성장단계
     const historyStr = cellText(row.getCell(9).value) // I: 참여이력
     const evaluatorStr = cellText(row.getCell(10).value) // J: 평가위원
+    const presurveyUrl = cellText(row.getCell(12).value) // L: 사전조사 링크
 
     if (!name || !typeStr) return
 
@@ -86,7 +88,7 @@ export async function POST(request: NextRequest) {
       evaluatorStr && `평가위원: ${evaluatorStr}`,
     ].filter(Boolean).join(' | ')
 
-    rows.push({ name, title, instrument, stage, fiscal_year, activity_type: activityStr || null, history: historyStr || null, notes })
+    rows.push({ name, title, instrument, stage, fiscal_year, activity_type: activityStr || null, history: historyStr || null, presurvey_url: presurveyUrl || null, notes })
   })
 
   if (!rows.length) return NextResponse.json({ error: '유효한 데이터가 없습니다' }, { status: 400 })
@@ -108,6 +110,7 @@ export async function POST(request: NextRequest) {
         fiscal_year: row.fiscal_year,
         activity_type: row.activity_type,
         history: row.history,
+        presurvey_url: row.presurvey_url,
         notes: row.notes,
         updated_at: new Date().toISOString(),
       }).eq('id', existing.id)

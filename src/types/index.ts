@@ -107,6 +107,7 @@ export interface Subject {
   target_model: TargetModel | null
   activity_type: string | null
   history: string | null
+  presurvey_url: string | null
   notes: string | null
   created_at: string
   updated_at: string

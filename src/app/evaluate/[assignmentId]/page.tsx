@@ -23,7 +23,7 @@ export default async function EvaluatePage({ params }: PageProps) {
   const service = createServiceClient()
   const { data: assignment } = await service
     .from('assignments')
-    .select('id, evaluator_id, subjects(id, name, instrument, stage, fiscal_year, target_model, activity_type, history)')
+    .select('id, evaluator_id, subjects(id, name, instrument, stage, fiscal_year, target_model, activity_type, history, presurvey_url)')
     .eq('id', assignmentId)
     .single()
 
@@ -39,6 +39,7 @@ export default async function EvaluatePage({ params }: PageProps) {
       target_model: TargetModel | null
       activity_type: string | null
       history: string | null
+      presurvey_url: string | null
     }
   }).subjects
 
@@ -111,6 +112,17 @@ export default async function EvaluatePage({ params }: PageProps) {
             </span>
           )}
         </div>
+        {subject.presurvey_url && (
+          <a
+            href={subject.presurvey_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 flex items-center justify-between gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 hover:bg-blue-100 transition"
+          >
+            <span className="text-sm font-medium text-blue-800">📋 사전조사 응답 보기</span>
+            <span className="text-xs text-blue-600">새 창으로 열기 ↗</span>
+          </a>
+        )}
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
