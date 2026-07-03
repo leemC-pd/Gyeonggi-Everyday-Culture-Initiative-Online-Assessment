@@ -85,7 +85,9 @@ export default async function ProgressPage() {
               if (assignments.length === 0) {
                 return (
                   <tr key={s.id} className="text-gray-400">
-                    <td className="px-4 py-3 font-medium text-gray-700">{s.name}</td>
+                    <td className="px-4 py-3 font-medium text-gray-700">
+                      <a href={`/admin/progress/${s.id}`} className="hover:text-blue-600 hover:underline">{s.name}</a>
+                    </td>
                     <td className="px-4 py-3">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
                     <td className="px-4 py-3 italic">미배정</td>
                     <td colSpan={3} className="px-4 py-3"></td>
@@ -101,7 +103,7 @@ export default async function ProgressPage() {
                   <tr key={a.id} className="hover:bg-gray-50">
                     {idx === 0 && (
                       <td className="px-4 py-3 font-medium text-gray-800" rowSpan={assignments.length}>
-                        {s.name}
+                        <a href={`/admin/progress/${s.id}`} className="hover:text-blue-600 hover:underline">{s.name}</a>
                       </td>
                     )}
                     {idx === 0 && (
