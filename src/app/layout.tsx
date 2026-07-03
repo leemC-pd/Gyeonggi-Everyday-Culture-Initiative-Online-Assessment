@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "2026 생활문화 온라인 평가시스템",
-  description: "경기도 생활문화사업 온라인 평가시스템",
+  title: "2026 생활문화사업 온라인 평가시스템",
+  description: "경기문화재단 생활문화플랫폼, 생활문화공간활성화 사업 온라인 평가시스템",
 };
 
 export default function RootLayout({
