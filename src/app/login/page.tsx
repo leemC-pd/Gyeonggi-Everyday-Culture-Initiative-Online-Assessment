@@ -29,9 +29,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white rounded-xl shadow p-8 w-full max-w-sm">
-        <p className="text-xs text-gray-500 leading-snug mb-2">
-          2026 경기문화재단 생활문화사업 평가<br />
-          <span className="text-gray-400">- 생활문화플랫폼 · 생활문화공간활성화 -</span>
+        <p className="text-xs leading-snug mb-2">
+          <span className="font-bold text-gray-700">2026 경기문화재단 생활문화사업 평가</span><br />
+          <span className="text-gray-400">생활문화플랫폼 · 생활문화공간활성화</span>
         </p>
         <h1 className="text-xl font-bold text-gray-800 mb-6">평가위원 로그인</h1>
 
