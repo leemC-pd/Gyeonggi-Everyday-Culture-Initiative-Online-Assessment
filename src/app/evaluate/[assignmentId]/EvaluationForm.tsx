@@ -170,6 +170,8 @@ export default function EvaluationForm({
     for (const areaCode of activeAreas) {
       if (!qualitative[areaCode]?.trim()) missing.push(`${areaCode}영역 정성 평가`)
     }
+    // 총평
+    if (!qualitative['overall']?.trim()) missing.push('총평')
     return missing
   }
 
@@ -390,6 +392,26 @@ export default function EvaluationForm({
           </section>
         )
       })}
+
+      {/* 총평 */}
+      <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 border-b px-5 py-3">
+          <span className="font-semibold text-gray-700">총평</span>
+        </div>
+        <div className="px-5 py-4">
+          {submitDone ? (
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">{qualitative['overall'] || '—'}</p>
+          ) : (
+            <textarea
+              rows={4}
+              value={qualitative['overall'] ?? ''}
+              onChange={e => handleQualChange('overall', e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              placeholder="사업 전반에 대한 종합 의견을 입력하세요."
+            />
+          )}
+        </div>
+      </section>
 
       {/* 채점 결과 */}
       {(submitDone && result) && (

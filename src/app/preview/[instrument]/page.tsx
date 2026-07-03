@@ -181,6 +181,18 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
             </section>
           )
         })}
+
+        {/* 총평 */}
+        <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-gray-50 border-b px-5 py-3">
+            <span className="font-semibold text-gray-700">총평</span>
+          </div>
+          <div className="px-5 py-4">
+            <div className="w-full border border-dashed border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400 bg-white">
+              (평가위원이 사업 전반에 대한 종합 의견을 입력합니다)
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   )
