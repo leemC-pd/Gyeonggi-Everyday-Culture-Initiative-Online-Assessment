@@ -29,7 +29,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white rounded-xl shadow p-8 w-full max-w-sm">
-        <h1 className="text-lg font-bold text-gray-800 mb-1 leading-snug">2026 경기문화재단 생활문화사업 평가진단</h1>
+        <h1 className="text-lg font-bold text-gray-800 mb-1 leading-snug">2026 경기문화재단 생활문화사업 평가</h1>
         <p className="text-sm text-gray-500 mb-6">- 생활문화플랫폼 · 생활문화공간활성화 -</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
