@@ -29,17 +29,6 @@ export default async function ProgressPage() {
     .order('instrument')
     .order('name')
 
-  // 민간공간 운영자 자가진단 수집 현황
-  const { data: tokens } = await supabase
-    .from('operator_tokens')
-    .select('subject_id, space_name, used_at')
-
-  const tokensBySubject: Record<string, { space_name: string; submitted: boolean }[]> = {}
-  for (const t of tokens ?? []) {
-    if (!tokensBySubject[t.subject_id]) tokensBySubject[t.subject_id] = []
-    tokensBySubject[t.subject_id].push({ space_name: t.space_name, submitted: !!t.used_at })
-  }
-
   type SubjectRow = {
     id: string
     name: string
@@ -87,16 +76,11 @@ export default async function ProgressPage() {
               <th className="text-left px-4 py-3">상태</th>
               <th className="text-right px-4 py-3">총점</th>
               <th className="text-right px-4 py-3">등급</th>
-              <th className="text-left px-4 py-3">운영자 자가진단</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {subjectRows.map(s => {
               const assignments = s.assignments ?? []
-              const operatorTokens = tokensBySubject[s.id]
-              const operatorSummary = operatorTokens
-                ? `${operatorTokens.filter(t => t.submitted).length}/${operatorTokens.length}`
-                : null
 
               if (assignments.length === 0) {
                 return (
@@ -104,7 +88,7 @@ export default async function ProgressPage() {
                     <td className="px-4 py-3 font-medium text-gray-700">{s.name}</td>
                     <td className="px-4 py-3">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
                     <td className="px-4 py-3 italic">미배정</td>
-                    <td colSpan={4} className="px-4 py-3"></td>
+                    <td colSpan={3} className="px-4 py-3"></td>
                   </tr>
                 )
               }
@@ -138,13 +122,6 @@ export default async function ProgressPage() {
                     <td className="px-4 py-3 text-right font-bold text-blue-700">
                       {ev?.grade ?? '—'}
                     </td>
-                    {idx === 0 && (
-                      <td className="px-4 py-3 text-xs text-gray-500" rowSpan={assignments.length}>
-                        {s.instrument === 'private_space_foundation'
-                          ? (operatorSummary ? `${operatorSummary}건 제출` : '—')
-                          : '—'}
-                      </td>
-                    )}
                   </tr>
                 )
               })
