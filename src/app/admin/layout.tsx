@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import LogoutButton from './LogoutButton'
-import PreviewMenu from './PreviewMenu'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -36,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin/progress" className="text-gray-600 hover:text-blue-600">진행상황</Link>
             <Link href="/admin/export" className="text-gray-600 hover:text-blue-600">내보내기</Link>
             <Link href="/admin/instruments" className="text-gray-600 hover:text-blue-600">진단지편집</Link>
-            <PreviewMenu />
+            <Link href="/admin/preview" className="text-gray-600 hover:text-blue-600">진단지 미리보기</Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">

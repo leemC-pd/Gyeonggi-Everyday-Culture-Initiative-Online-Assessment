@@ -40,7 +40,7 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
     .select('role')
     .eq('id', user.id)
     .single()
-  const backHref = profile?.role === 'admin' ? '/admin' : '/'
+  const backHref = (profile?.role === 'admin' || profile?.role === 'viewer') ? '/admin/preview' : '/'
 
   const instrument = getInstrument(instrumentId as InstrumentType)
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
