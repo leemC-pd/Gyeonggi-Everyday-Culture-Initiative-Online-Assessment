@@ -23,7 +23,7 @@ export default async function SubjectsPage() {
   return (
     <div>
       <div className="flex items-start justify-between mb-6 min-h-[2.25rem]">
-        <h1 className="text-xl font-bold text-gray-800">평가 대상</h1>
+        <h1 className="text-xl font-bold text-gray-800">평가대상</h1>
         {canEdit && (
           <div className="flex gap-2">
             <UploadButton />
