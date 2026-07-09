@@ -56,14 +56,16 @@ export default async function ProgressPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-gray-800 mb-2">진행상황</h1>
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-gray-800">진행상황</h1>
 
-      {/* 요약 바 */}
-      <div className="flex gap-4 text-sm mb-6">
-        <span className="text-gray-500">전체 <b className="text-gray-800">{total}</b>건</span>
-        <span className="text-yellow-600">임시저장 <b>{started}</b></span>
-        <span className="text-green-600">제출완료 <b>{submitted}</b></span>
-        <span className="text-gray-400">미시작 <b>{total - started - submitted}</b></span>
+        {/* 요약 바 */}
+        <div className="flex gap-4 text-sm mt-2">
+          <span className="text-gray-500">전체 <b className="text-gray-800">{total}</b>건</span>
+          <span className="text-yellow-600">임시저장 <b>{started}</b></span>
+          <span className="text-green-600">제출완료 <b>{submitted}</b></span>
+          <span className="text-gray-400">미시작 <b>{total - started - submitted}</b></span>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">

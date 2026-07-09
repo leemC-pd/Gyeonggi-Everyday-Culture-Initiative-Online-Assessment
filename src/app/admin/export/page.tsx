@@ -11,10 +11,12 @@ export default async function ExportPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-xl font-bold text-gray-800 mb-2">내보내기</h1>
-      <p className="text-sm text-gray-500 mb-6">
-        제출 완료된 평가 <b>{submittedCount ?? 0}건</b>을 내보냅니다.
-      </p>
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-gray-800">내보내기</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          제출 완료된 평가 <b>{submittedCount ?? 0}건</b>을 내보냅니다.
+        </p>
+      </div>
 
       <div className="space-y-4">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
