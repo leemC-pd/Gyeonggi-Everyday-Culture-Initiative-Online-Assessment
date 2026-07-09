@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { getInstrument, getAreaName, AREA_CODES } from '@/lib/instruments'
 import { calculate, itemApplies } from '@/lib/scoring'
 import type { InstrumentType } from '@/types'
@@ -29,7 +29,7 @@ const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
 }
 
 export async function fetchExportData(): Promise<SubjectExportRow[]> {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data: assignments } = await supabase
     .from('assignments')
