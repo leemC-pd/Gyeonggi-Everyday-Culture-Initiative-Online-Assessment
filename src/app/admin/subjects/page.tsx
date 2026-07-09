@@ -42,21 +42,21 @@ export default async function SubjectsPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b text-xs text-gray-500">
               <tr>
-                <th className="text-left px-4 py-3">기관명</th>
-                <th className="text-left px-4 py-3">사업명</th>
-                <th className="text-left px-4 py-3">진단지</th>
-                <th className="text-left px-4 py-3">단계</th>
-                <th className="px-4 py-3"></th>
+                <th className="text-left px-5 py-3">기관명</th>
+                <th className="text-left px-5 py-3">사업명</th>
+                <th className="text-left px-5 py-3">진단지</th>
+                <th className="text-left px-5 py-3">단계</th>
+                <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {subjects.map(s => (
                 <tr key={s.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-800">{s.name}</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">{(s as { title?: string }).title ?? '—'}</td>
-                  <td className="px-4 py-3 text-gray-600">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
-                  <td className="px-4 py-3 text-gray-500">{s.stage ?? s.fiscal_year ?? '—'}</td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-5 py-3 font-medium text-gray-800">{s.name}</td>
+                  <td className="px-5 py-3 text-gray-500 text-xs">{(s as { title?: string }).title ?? '—'}</td>
+                  <td className="px-5 py-3 text-gray-600">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
+                  <td className="px-5 py-3 text-gray-500">{s.stage ?? s.fiscal_year ?? '—'}</td>
+                  <td className="px-5 py-3 text-right">
                     <Link href={`/admin/subjects/${s.id}`}
                       className="text-blue-600 hover:underline text-xs">
                       배정·상세

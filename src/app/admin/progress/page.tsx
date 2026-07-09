@@ -72,12 +72,12 @@ export default async function ProgressPage() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b text-xs text-gray-500">
             <tr>
-              <th className="text-left px-4 py-3">기관명</th>
-              <th className="text-left px-4 py-3">진단지</th>
-              <th className="text-left px-4 py-3">위원</th>
-              <th className="text-left px-4 py-3">상태</th>
-              <th className="text-right px-4 py-3">총점</th>
-              <th className="text-right px-4 py-3">등급</th>
+              <th className="text-left px-5 py-3">기관명</th>
+              <th className="text-left px-5 py-3">진단지</th>
+              <th className="text-left px-5 py-3">위원</th>
+              <th className="text-left px-5 py-3">상태</th>
+              <th className="text-right px-5 py-3">총점</th>
+              <th className="text-right px-5 py-3">등급</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -87,12 +87,12 @@ export default async function ProgressPage() {
               if (assignments.length === 0) {
                 return (
                   <tr key={s.id} className="text-gray-400">
-                    <td className="px-4 py-3 font-medium text-gray-700">
+                    <td className="px-5 py-3 font-medium text-gray-700">
                       <a href={`/admin/progress/${s.id}`} className="hover:text-blue-600 hover:underline">{s.name}</a>
                     </td>
-                    <td className="px-4 py-3">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
-                    <td className="px-4 py-3 italic">미배정</td>
-                    <td colSpan={3} className="px-4 py-3"></td>
+                    <td className="px-5 py-3">{INSTRUMENT_LABELS[s.instrument as InstrumentType]}</td>
+                    <td className="px-5 py-3 italic">미배정</td>
+                    <td colSpan={3} className="px-5 py-3"></td>
                   </tr>
                 )
               }
@@ -104,30 +104,30 @@ export default async function ProgressPage() {
                 return (
                   <tr key={a.id} className="hover:bg-gray-50">
                     {idx === 0 && (
-                      <td className="px-4 py-3 font-medium text-gray-800" rowSpan={assignments.length}>
+                      <td className="px-5 py-3 font-medium text-gray-800" rowSpan={assignments.length}>
                         <a href={`/admin/progress/${s.id}`} className="hover:text-blue-600 hover:underline">{s.name}</a>
                       </td>
                     )}
                     {idx === 0 && (
-                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap" rowSpan={assignments.length}>
+                      <td className="px-5 py-3 text-gray-600 whitespace-nowrap" rowSpan={assignments.length}>
                         {INSTRUMENT_LABELS[s.instrument as InstrumentType]}
                         {(s.stage ?? s.fiscal_year) && <span className="text-gray-400"> · {s.stage ?? s.fiscal_year}</span>}
                       </td>
                     )}
-                    <td className="px-4 py-3 text-gray-800">
+                    <td className="px-5 py-3 text-gray-800">
                       {ev?.id
                         ? <a href={`/admin/evaluations/${ev.id}`} className="text-blue-600 hover:underline">{a.profiles?.name}</a>
                         : a.profiles?.name}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3">
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.color}`}>
                         {badge.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-800 tabular-nums">
+                    <td className="px-5 py-3 text-right font-medium text-gray-800 tabular-nums">
                       {ev?.total_score != null ? Number(ev.total_score).toFixed(1) : '—'}
                     </td>
-                    <td className="px-4 py-3 text-right font-bold text-blue-700">
+                    <td className="px-5 py-3 text-right font-bold text-blue-700">
                       {ev?.grade ?? '—'}
                     </td>
                   </tr>
