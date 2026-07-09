@@ -109,9 +109,9 @@ export default async function ProgressPage() {
                       </td>
                     )}
                     {idx === 0 && (
-                      <td className="px-4 py-3 text-gray-600" rowSpan={assignments.length}>
+                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap" rowSpan={assignments.length}>
                         {INSTRUMENT_LABELS[s.instrument as InstrumentType]}
-                        <span className="block text-xs text-gray-400">{s.stage ?? s.fiscal_year}</span>
+                        {(s.stage ?? s.fiscal_year) && <span className="text-gray-400"> · {s.stage ?? s.fiscal_year}</span>}
                       </td>
                     )}
                     <td className="px-4 py-3 text-gray-800">
