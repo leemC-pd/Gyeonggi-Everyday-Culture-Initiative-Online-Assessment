@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import type { InstrumentType, OperationStage, TargetModel, FiscalYearType } from '@/types'
 
 const INSTRUMENTS: { value: InstrumentType; label: string }[] = [
@@ -28,21 +27,25 @@ export default function NewSubjectPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const supabase = createClient()
-    const { error } = await supabase.from('subjects').insert({
-      name,
-      instrument,
-      stage: isPrivate ? null : stage,
-      fiscal_year: isPrivate ? fiscalYear : null,
-      target_model: targetModel,
-      notes: notes || null,
+    const res = await fetch('/api/admin/create-subject', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        instrument,
+        stage: isPrivate ? null : stage,
+        fiscal_year: isPrivate ? fiscalYear : null,
+        target_model: targetModel,
+        notes: notes || null,
+      }),
     })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
+    const data = await res.json()
+    if (data.ok) {
       router.push('/admin/subjects')
       router.refresh()
+    } else {
+      setError(data.error || '등록 실패')
+      setLoading(false)
     }
   }
 
