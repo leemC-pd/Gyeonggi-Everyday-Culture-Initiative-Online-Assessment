@@ -4,6 +4,7 @@ import { createServiceClient as createClient } from '@/lib/supabase/service'
 import AssignmentManager from './AssignmentManager'
 import SubjectStageEditor from './SubjectStageEditor'
 import SubjectActivityEditor from './SubjectActivityEditor'
+import DeleteSubjectButton from './DeleteSubjectButton'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -58,7 +59,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
       {/* 헤더 */}
       <div className="flex items-center gap-3 mb-6">
         <Link href="/admin/subjects" className="text-gray-400 hover:text-gray-600 text-sm">← 목록</Link>
-        <div>
+        <div className="flex-1">
           <h1 className="text-xl font-bold text-gray-800">{subject.name}</h1>
           <p className="text-sm text-gray-500 flex items-center flex-wrap gap-1">
             {INSTRUMENT_LABELS[subject.instrument as InstrumentType]}
@@ -82,6 +83,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
             {subject.history && <span className="ml-2">· {subject.history}</span>}
           </p>
         </div>
+        <DeleteSubjectButton subjectId={subjectId} subjectName={subject.name} />
       </div>
 
       {/* 위원 배정 */}
