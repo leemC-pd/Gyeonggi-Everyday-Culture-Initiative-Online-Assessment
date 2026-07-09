@@ -19,6 +19,12 @@
   }
 }
 
+html {
+  /* 스크롤바 유무에 따른 가로 위치 흔들림 방지 (페이지 간 좌측 정렬 일치) */
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
