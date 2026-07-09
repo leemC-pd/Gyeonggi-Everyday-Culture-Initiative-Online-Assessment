@@ -19,13 +19,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .eq('id', user.id)
     .single()
 
-  if (profile?.role !== 'admin') redirect('/')
+  if (profile?.role !== 'admin' && profile?.role !== 'viewer') redirect('/')
+  const isViewer = profile?.role === 'viewer'
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b px-6 py-3 flex items-center justify-between print:hidden">
         <div className="flex items-center gap-6">
           <Link href="/admin" className="font-bold text-gray-800 text-sm">관리자</Link>
+          {isViewer && <span className="text-[11px] font-medium text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">열람 전용</span>}
           <nav className="flex gap-4 text-sm">
             <Link href="/admin" className="text-gray-600 hover:text-blue-600">대시보드</Link>
             <Link href="/admin/subjects" className="text-gray-600 hover:text-blue-600">평가대상</Link>

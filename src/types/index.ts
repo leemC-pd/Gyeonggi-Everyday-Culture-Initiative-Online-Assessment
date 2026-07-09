@@ -83,7 +83,7 @@ export interface InstrumentConfig {
 
 // ─── DB 타입 ─────────────────────────────────────────────────
 
-export type UserRole = 'admin' | 'evaluator'
+export type UserRole = 'admin' | 'evaluator' | 'viewer'
 export type InstrumentType = 'platform_foundation' | 'platform_org' | 'private_space_foundation'
 export type OperationStage = '진입' | '성장'
 export type TargetModel = '개방-일반형' | '특정-공동체형' | '혼합형'

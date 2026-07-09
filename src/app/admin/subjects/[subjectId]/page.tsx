@@ -5,6 +5,7 @@ import AssignmentManager from './AssignmentManager'
 import SubjectStageEditor from './SubjectStageEditor'
 import SubjectActivityEditor from './SubjectActivityEditor'
 import DeleteSubjectButton from './DeleteSubjectButton'
+import { getCurrentRole } from '@/lib/auth'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -20,6 +21,7 @@ interface PageProps {
 export default async function SubjectDetailPage({ params }: PageProps) {
   const { subjectId } = await params
   const supabase = createClient()
+  const canEdit = (await getCurrentRole()) === 'admin'
 
   const { data: subject } = await supabase
     .from('subjects')
@@ -64,26 +66,26 @@ export default async function SubjectDetailPage({ params }: PageProps) {
           <p className="text-sm text-gray-500 flex items-center flex-wrap gap-1">
             {INSTRUMENT_LABELS[subject.instrument as InstrumentType]}
             {subject.instrument !== 'private_space_foundation' && (
-              <span className="ml-1">·
+              <span className="ml-1">· {canEdit ? (
                 <SubjectStageEditor
                   subjectId={subjectId}
                   currentStage={subject.stage ?? null}
                   instrument={subject.instrument}
                 />
-              </span>
+              ) : (subject.stage ?? '단계미설정')}</span>
             )}
             {subject.target_model && <span className="ml-2">· {subject.target_model}</span>}
-            <span className="ml-1">·
+            <span className="ml-1">· {canEdit ? (
               <SubjectActivityEditor
                 subjectId={subjectId}
                 currentActivity={subject.activity_type ?? null}
                 instrument={subject.instrument}
               />
-            </span>
+            ) : (subject.activity_type ?? '활동유형미설정')}</span>
             {subject.history && <span className="ml-2">· {subject.history}</span>}
           </p>
         </div>
-        <DeleteSubjectButton subjectId={subjectId} subjectName={subject.name} />
+        {canEdit && <DeleteSubjectButton subjectId={subjectId} subjectName={subject.name} />}
       </div>
 
       {/* 위원 배정 */}
@@ -93,6 +95,7 @@ export default async function SubjectDetailPage({ params }: PageProps) {
           subjectId={subjectId}
           assignments={rows}
           evaluators={(evaluators ?? []).filter(e => !assignedIds.includes(e.id))}
+          readOnly={!canEdit}
         />
       </section>
 

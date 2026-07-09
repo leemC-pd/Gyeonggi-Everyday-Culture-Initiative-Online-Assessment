@@ -27,6 +27,7 @@ export default function NewSubjectPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    // 권한 없는 요청은 서버(API)에서 자동 거부됨(403)
     const res = await fetch('/api/admin/create-subject', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

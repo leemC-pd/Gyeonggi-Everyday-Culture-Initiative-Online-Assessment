@@ -9,9 +9,10 @@ interface Props {
   initialItems: Item[]
   areaCodes: readonly string[]
   areaNames: Record<string, string>
+  readOnly?: boolean
 }
 
-export default function InstrumentEditor({ instrumentId, initialItems, areaCodes, areaNames }: Props) {
+export default function InstrumentEditor({ instrumentId, initialItems, areaCodes, areaNames, readOnly = false }: Props) {
   const router = useRouter()
   const [items, setItems] = useState<Item[]>(initialItems)
   const [saving, setSaving] = useState(false)
@@ -70,7 +71,11 @@ export default function InstrumentEditor({ instrumentId, initialItems, areaCodes
 
   return (
     <div className="space-y-6">
+      {readOnly && (
+        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">열람 전용 — 진단지 편집 권한이 없습니다.</p>
+      )}
       {/* 저장 버튼 */}
+      {!readOnly && (
       <div className="flex items-center gap-3">
         <button
           onClick={handleSave}
@@ -87,6 +92,7 @@ export default function InstrumentEditor({ instrumentId, initialItems, areaCodes
         </button>
         {message && <p className="text-sm text-gray-600">{message}</p>}
       </div>
+      )}
 
       {/* 영역별 문항 */}
       {areaCodes.map(areaCode => {
@@ -96,12 +102,14 @@ export default function InstrumentEditor({ instrumentId, initialItems, areaCodes
           <section key={areaCode} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 border-b px-5 py-3 flex items-center justify-between">
               <span className="font-semibold text-gray-700">{areaCode}. {areaNames[areaCode] ?? areaCode}</span>
-              <button
-                onClick={() => addItem(areaCode)}
-                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-              >
-                + 문항 추가
-              </button>
+              {!readOnly && (
+                <button
+                  onClick={() => addItem(areaCode)}
+                  className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  + 문항 추가
+                </button>
+              )}
             </div>
 
             <div className="divide-y divide-gray-100">
@@ -113,24 +121,28 @@ export default function InstrumentEditor({ instrumentId, initialItems, areaCodes
                       rows={2}
                       value={item.text}
                       onChange={e => updateItem(idx, 'text', e.target.value)}
+                      readOnly={readOnly}
                       className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     />
                     <div className="flex flex-col gap-1 shrink-0">
                       <select
                         value={item.appliesTo}
                         onChange={e => updateItem(idx, 'appliesTo', e.target.value)}
+                        disabled={readOnly}
                         className="border border-gray-300 rounded px-2 py-1 text-xs text-gray-700"
                       >
                         <option value="all">전체</option>
                         <option value="성장">성장</option>
                         <option value="진입">진입</option>
                       </select>
-                      <button
-                        onClick={() => deleteItem(idx)}
-                        className="text-xs text-red-400 hover:text-red-600 text-center"
-                      >
-                        삭제
-                      </button>
+                      {!readOnly && (
+                        <button
+                          onClick={() => deleteItem(idx)}
+                          className="text-xs text-red-400 hover:text-red-600 text-center"
+                        >
+                          삭제
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

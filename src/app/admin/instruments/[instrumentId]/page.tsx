@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { getAreaName, AREA_CODES } from '@/lib/instruments'
+import { getCurrentRole } from '@/lib/auth'
 import type { InstrumentType } from '@/types'
 import InstrumentEditor from './InstrumentEditor'
 
@@ -20,6 +21,7 @@ export default async function InstrumentEditPage({ params }: PageProps) {
   if (!VALID.includes(instrumentId as InstrumentType)) notFound()
 
   const instrument = await getInstrumentWithOverrides(instrumentId as InstrumentType)
+  const canEdit = (await getCurrentRole()) === 'admin'
 
   return (
     <div>
@@ -34,6 +36,7 @@ export default async function InstrumentEditPage({ params }: PageProps) {
         initialItems={instrument.items}
         areaCodes={AREA_CODES.filter(a => instrument.items.some(i => i.area === a))}
         areaNames={Object.fromEntries(AREA_CODES.map(a => [a, getAreaName(a)]))}
+        readOnly={!canEdit}
       />
     </div>
   )

@@ -24,10 +24,12 @@ export default function AssignmentManager({
   subjectId,
   assignments,
   evaluators,
+  readOnly = false,
 }: {
   subjectId: string
   assignments: Assignment[]
   evaluators: Evaluator[]
+  readOnly?: boolean
 }) {
   const router = useRouter()
   const [selectedId, setSelectedId] = useState('')
@@ -91,12 +93,14 @@ export default function AssignmentManager({
                     </span>
                   )}
                 </div>
-                <button
-                  onClick={() => handleRemove(a.id, ev?.status)}
-                  className="text-xs text-red-500 hover:text-red-700"
-                >
-                  배정 취소
-                </button>
+                {!readOnly && (
+                  <button
+                    onClick={() => handleRemove(a.id, ev?.status)}
+                    className="text-xs text-red-500 hover:text-red-700"
+                  >
+                    배정 취소
+                  </button>
+                )}
               </li>
             )
           })}
@@ -104,7 +108,7 @@ export default function AssignmentManager({
       )}
 
       {/* 위원 추가 */}
-      {evaluators.length > 0 && (
+      {!readOnly && evaluators.length > 0 && (
         <div className="flex gap-2 pt-2">
           <select
             value={selectedId}

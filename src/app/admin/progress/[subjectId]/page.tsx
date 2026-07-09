@@ -5,6 +5,7 @@ import { getAreaName, AREA_CODES } from '@/lib/instruments'
 import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { itemApplies } from '@/lib/scoring'
 import ReconcileItemsForm from './ReconcileItemsForm'
+import { getCurrentRole } from '@/lib/auth'
 import type { InstrumentType } from '@/types'
 
 const INSTRUMENT_LABELS: Record<InstrumentType, string> = {
@@ -20,6 +21,7 @@ interface PageProps {
 export default async function SubjectResultsPage({ params }: PageProps) {
   const { subjectId } = await params
   const supabase = createClient()
+  const canEdit = (await getCurrentRole()) === 'admin'
 
   const { data: subject } = await supabase
     .from('subjects')
@@ -203,15 +205,24 @@ export default async function SubjectResultsPage({ params }: PageProps) {
               </span>
             )}
           </div>
-          <ReconcileItemsForm
-            subjectId={subjectId}
-            instrument={instrument}
-            stage={stage}
-            items={reconcileItems}
-            areaNames={areaNames}
-            initialScores={reconInitial}
-            existingReason={latestRecon?.reason ?? null}
-          />
+          {canEdit ? (
+            <ReconcileItemsForm
+              subjectId={subjectId}
+              instrument={instrument}
+              stage={stage}
+              items={reconcileItems}
+              areaNames={areaNames}
+              initialScores={reconInitial}
+              existingReason={latestRecon?.reason ?? null}
+            />
+          ) : latestRecon ? (
+            <div className="text-sm text-gray-700">
+              <p>합의 총점 <b className="tabular-nums">{Number(latestRecon.total_score).toFixed(2)}</b>점 · 등급 <b className="text-blue-700">{latestRecon.grade}</b></p>
+              {latestRecon.reason && <p className="mt-2 text-gray-600 whitespace-pre-wrap">사유: {latestRecon.reason}</p>}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">아직 합의점수가 없습니다. (열람 전용)</p>
+          )}
         </section>
       )}
 

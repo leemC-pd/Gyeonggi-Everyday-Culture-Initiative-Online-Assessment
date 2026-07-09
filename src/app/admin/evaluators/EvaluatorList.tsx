@@ -10,7 +10,7 @@ interface Evaluator {
   created_at: string
 }
 
-export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] }) {
+export default function EvaluatorList({ evaluators, readOnly = false }: { evaluators: Evaluator[]; readOnly?: boolean }) {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -43,6 +43,7 @@ export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] 
   return (
     <div className="space-y-6">
       {/* 등록 폼 */}
+      {!readOnly && (
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <h2 className="font-semibold text-gray-700 mb-4">새 평가위원 등록</h2>
         <div className="flex gap-3 flex-wrap">
@@ -77,6 +78,7 @@ export default function EvaluatorList({ evaluators }: { evaluators: Evaluator[] 
         </div>
         {message && <p className="mt-3 text-sm text-gray-600">{message}</p>}
       </div>
+      )}
 
       {/* 목록 */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
