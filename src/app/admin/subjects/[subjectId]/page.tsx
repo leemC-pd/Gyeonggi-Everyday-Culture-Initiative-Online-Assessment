@@ -5,6 +5,7 @@ import AssignmentManager from './AssignmentManager'
 import SubjectStageEditor from './SubjectStageEditor'
 import SubjectActivityEditor from './SubjectActivityEditor'
 import DeleteSubjectButton from './DeleteSubjectButton'
+import PresurveyEditor from './PresurveyEditor'
 import { getCurrentRole } from '@/lib/auth'
 import type { InstrumentType } from '@/types'
 
@@ -87,6 +88,19 @@ export default async function SubjectDetailPage({ params }: PageProps) {
         </div>
         {canEdit && <DeleteSubjectButton subjectId={subjectId} subjectName={subject.name} />}
       </div>
+
+      {/* 사전조사 링크 */}
+      <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+        <h2 className="font-semibold text-gray-700 mb-3">사전조사 링크</h2>
+        {canEdit ? (
+          <PresurveyEditor subjectId={subjectId} currentUrl={subject.presurvey_url ?? null} />
+        ) : subject.presurvey_url ? (
+          <a href={subject.presurvey_url} target="_blank" rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:underline break-all">📋 사전조사 응답 보기 ↗</a>
+        ) : (
+          <span className="text-sm text-gray-400">사전조사 링크 없음</span>
+        )}
+      </section>
 
       {/* 위원 배정 */}
       <section className="bg-white rounded-xl border border-gray-200 p-5">
