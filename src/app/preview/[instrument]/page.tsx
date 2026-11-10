@@ -2,7 +2,8 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { getInstrument, getAreaName, getConfig, AREA_CODES } from '@/lib/instruments'
+import { getAreaName, getConfig, AREA_CODES } from '@/lib/instruments'
+import { getInstrumentWithOverrides } from '@/lib/instrumentOverrides'
 import { itemApplies } from '@/lib/scoring'
 import type { InstrumentType, Item } from '@/types'
 
@@ -42,7 +43,7 @@ export default async function PreviewPage({ params, searchParams }: PageProps) {
     .single()
   const backHref = (profile?.role === 'admin' || profile?.role === 'viewer') ? '/admin/preview' : '/'
 
-  const instrument = getInstrument(instrumentId as InstrumentType)
+  const instrument = await getInstrumentWithOverrides(instrumentId as InstrumentType)
   const weightKey = instrument.stageWeighted && stage ? stage : 'all'
   const weights = (instrument.weights[weightKey] ?? instrument.weights[Object.keys(instrument.weights)[0]] ?? {}) as Record<string, number>
 
